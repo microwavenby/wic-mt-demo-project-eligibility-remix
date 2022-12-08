@@ -1,0 +1,122 @@
+{
+  "ChooseClinic": {
+    "body": "You’ll need to visit a clinic in person to complete a certification appointment for WIC. Choose the clinic you would like to go to during business hours.",
+    "button": "Select this clinic and continue",
+    "listTitle": "Choose a clinic from the following list:",
+    "searchLabel": "Enter your residential ZIP code to search for a clinic:",
+    "showMoreOptions": "Show more clinic options",
+    "title": "Choose a clinic",
+    "zipSearchError": "Sorry, we could not find a match for this ZIP code in Montana. Please check what you entered and try again.",
+    "zipValidationError": "Please enter 5 digits for the ZIP code."
+  },
+  "Confirmation": {
+    "body": "Thank you for submitting your information. If you're eligible, you should hear from WIC staff at your chosen clinic within 20 days.",
+    "interestedIn": "Interested in other available assistance and benefits?",
+    "keepCopy": "Keep a copy of your confirmation for your records.",
+    "learnAbout": "Learn about other assistance",
+    "startNew": "Start a new application",
+    "submitAnother": "Do you need to submit another application for someone else?",
+    "title": "Your confirmation"
+  },
+  "Contact": {
+    "button": "Submit",
+    "comments": "Comments, questions, other information",
+    "commentsHeader": "Is there anything else you'd like to share with us?",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "name": "What's your name?",
+    "phone": "Phone number",
+    "phoneAlert": "Your chosen WIC clinic will contact you via phone to set up a time for a certification appointment during business hours.",
+    "phoneHeader": "What's the best phone number to reach you at?",
+    "title": "Contact information"
+  },
+  "Eligibility": {
+    "accordionBody": "There are multiple categories of eligibility, and your answers here help us understand what benefits you and/or your household may qualify for.",
+    "accordionHeader": "Why are we asking this?",
+    "adjunctive": "Are you or someone in your household currently enrolled in any of the following programs in Montana?",
+    "baby": "I've had a baby in the past 12 months",
+    "categorical": "Please select all the following that apply to your household:",
+    "child": "I'm the parent of an infant or child under the age of 5 years old",
+    "fdpir": "FDPIR (Food Distribution Program on Indian Reservations)",
+    "guardian": "I'm the guardian or foster parent of an infant or child under the age of 5 years old",
+    "header": "Check your eligibility",
+    "insurance": "Medicaid/Healthy Montana Kids Plus",
+    "loss": "I have had a pregnancy end in the last 6 months",
+    "no": "No",
+    "none": "None of the above",
+    "pregnant": "I'm pregnant",
+    "previouslyEnrolled": "Have you or someone in your household received WIC benefits before?",
+    "residential": "Do you live or work in Montana?",
+    "snap": "SNAP (Supplemental Nutrition Assistance Program)",
+    "tanf": "TANF (Temporary Assistance for Needy Families)",
+    "yes": "Yes"
+  },
+  "HowItWorks": {
+    "apply": "You can start applying for WIC by checking to see if you're eligible.",
+    "applyHeader": "Check your eligibility",
+    "appointment": "During your appointment, you'll need to show documentation of your income, identity, and residence.",
+    "appointmentHeader": "Complete your appointment with your local WIC clinic",
+    "button": "Check your eligibility",
+    "eligible": "<strong>If you are eligible</strong>, a staff member from your local WIC office will call you for additional information and to set up a certification appointment.",
+    "eligibleHeader": "WIC clinic staff will schedule a certification appointment",
+    "note": "<strong>Note:</strong> this form does not guarantee enrollment in WIC; your eligibility will be confirmed when you have your first appointment with WIC.",
+    "title": "How it works"
+  },
+  "Income": {
+    "accordionBody": "<p>A household is defined as all persons, related or unrelated, living together in the same dwelling and sharing financial resources and costs, with the exception of foster children.</p><p>If someone in your household is pregnant and applying for WIC benefits and is determined to be ineligible based on your household income, you may then increase your household size by the number of expected births.</p>",
+    "accordionHeader": "Who counts in my household?",
+    "assistance": "Learn about other assistance",
+    "enrolled": "If you or someone in your household are currently enrolled in <strong>Medicaid, Healthy Montana Kids Plus</strong>, Supplemental Nutrition Assistance Program (<strong>SNAP</strong>), Temporary Assistance for Needy Families (<strong>TANF</strong>), or Food Distribution Program on Indian Reservations (<strong>FDPIR</strong>), you may be automatically eligible for WIC.",
+    "estimatedIncome": "Estimated maximum income limit before taxes",
+    "header": "Check your eligibility",
+    "helper": "If someone in your household is pregnant and applying for WIC benefits and is determined to be ineligible based on your household income, you may then increase your household size by the number of expected births.",
+    "householdSize": "Household size",
+    "householdSizeHeader": "What is your household size?",
+    "incomePeriods": {
+      "annual": "Annual",
+      "biweekly": "Bi-weekly",
+      "monthly": "Monthly",
+      "weekly": "Weekly"
+    },
+    "notEnrolled": "If you are not currently enrolled in one or more of those programs, you will have to show proof your income is within a certain level.",
+    "title": "To be eligible for WIC, your <strong>household income before taxes</strong> must be <strong>at</strong> or <strong>below</strong> a certain income level.",
+    "unsure": "<strong>If you are unsure about your income, please continue to apply.</strong> A WIC staff member can answer more specific questions about your situation."
+  },
+  "Index": {
+    "benefits": "There are many benefits including healthy food, breastfeeding support, nutrition education, and connections to local resources.",
+    "button": "Get started",
+    "header": "<strong>WIC (Women, Infants, and Children)</strong> is a program designed to help families and young children during an important time in growth and development.",
+    "supplement": "WIC is meant to supplement your food budget and complement your use of other resources.",
+    "time": "You can start the application process for WIC now. <strong>This form should take about 10 minutes to complete.</strong>",
+    "title": "Start an application for WIC",
+    "voluntary": "WIC is a voluntary program and participation will not interfere with use of other programs like SNAP or Medicaid."
+  },
+  "Layout": {
+    "footer1": "This site is a demonstration project built with <0>Montana WIC</0> and is for example purposes only. If you need to submit an application for WIC, please use <1>SignUpWIC.com</1> to find a location near you.",
+    "footer2": "This institution is an equal opportunity provider. <0>USDA Non-Discrimination Statement</0>",
+    "header": "Apply for WIC in Montana"
+  },
+  "OtherBenefits": {
+    "assistance": "We recommend visiting <0>https://dphhs.mt.gov/Assistance</0> to learn about other assistance in Montana.",
+    "button": "Return to start page",
+    "location": "If you are not currently living or working in Montana, visit <0>SignUpWIC.com</0> to find a clinic near you.",
+    "subHeader": "Given your responses, you are likely not eligible for WIC in Montana.",
+    "title": "Your eligibility"
+  },
+  "Review": {
+    "button": "Submit",
+    "clinicSelected": "You selected this WIC Clinic to visit",
+    "eligibilityTitle": "Eligibility questions",
+    "subHeader": "Review the information on this page before submitting. If you want to make changes, select \"Edit\" to go to the section you want to change.",
+    "title": "Review and submit your information",
+    "zipCode": "Residential ZIP code"
+  },
+  "apiError": "An unexpected error occurred when attempting to submit your information. Please try again later.",
+  "asterisk": "All required questions are marked with an asterisk",
+  "backlinkText": "Back",
+  "continue": "Continue",
+  "edit": "Edit",
+  "routingError": "Some required responses are missing. Please go back through the form and answer all required questions.",
+  "select": "Select",
+  "updateAndReturn": "Update"
+}

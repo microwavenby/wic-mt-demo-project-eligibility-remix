@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model EligibilityForm {
+  eligibility_form_id    String                @id @default(uuid()) @db.Uuid
+  updated_at             DateTime              @updatedAt @db.Timestamptz
+  completed              Boolean               @default(false)
+  submitted              Boolean               @default(false)
+  eligibility_form_pages EligibilityFormPage[]
+}
+
+model EligibilityFormPage {
+  eligibility_form_page_id String          @id @default(uuid()) @db.Uuid
+  eligibility_form_id      String          @db.Uuid
+  eligibility_form         EligibilityForm @relation(fields: [eligibility_form_id], references: [eligibility_form_id])
+  form_route               String
+  form_data                Json
+  updated_at               DateTime        @updatedAt @db.Timestamptz
+}

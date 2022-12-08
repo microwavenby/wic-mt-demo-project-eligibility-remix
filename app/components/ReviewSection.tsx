@@ -1,0 +1,148 @@
+import { useTranslation } from "react-i18next";
+import { ReactElement } from "react";
+
+import ClinicInfo from "app/components/ClinicInfo";
+import List from "app/components/List";
+import ReviewCollection from "app/components/ReviewCollection";
+import { ReviewElementProps } from "app/components/ReviewElement";
+
+import type {
+  ChooseClinicData,
+  ContactData,
+  EligibilityData,
+  IncomeData,
+  SessionData,
+} from "app/types";
+import { formatPhone } from "app/utils/dataFormatting";
+
+export type ReviewSectionProps = {
+  editable: boolean;
+  session: SessionData;
+};
+
+const ReviewSection = (props: ReviewSectionProps): ReactElement => {
+  const { editable, session } = props;
+  let { t } = useTranslation();
+  const reviewMode = { mode: "review" };
+
+  const showHouseholdSize =
+    session.income.householdSize !== "" &&
+    session.eligibility.adjunctive.includes("none");
+
+  const formatEligibilityResponses = (
+    eligibility: EligibilityData
+  ): ReviewElementProps[] => {
+    const categoricalKeys = eligibility.categorical.map((key: string) => {
+      return `Eligibility.${key}`;
+    });
+    const adjunctiveKeys = eligibility.adjunctive.map((key: string) => {
+      return `Eligibility.${key}`;
+    });
+
+    return [
+      {
+        labelKey: "Eligibility.residential",
+        children: t(`Eligibility.${eligibility.residential}`),
+      },
+      {
+        labelKey: "Eligibility.categorical",
+        children: <List i18nKeys={categoricalKeys} />,
+      },
+      {
+        labelKey: "Eligibility.previouslyEnrolled",
+        children: t(`Eligibility.${eligibility.previouslyEnrolled}`),
+      },
+      {
+        labelKey: "Eligibility.adjunctive",
+        children: <List i18nKeys={adjunctiveKeys} />,
+      },
+    ];
+  };
+
+  const formatIncomeResponses = (income: IncomeData) => {
+    return [
+      {
+        labelKey: "Income.householdSize",
+        children: <div>{income.householdSize}</div>,
+      },
+    ];
+  };
+
+  const formatClinicResponses = (
+    chooseClinic: ChooseClinicData
+  ): ReviewElementProps[] => {
+    const zipCodeElement = {
+      labelKey: "Review.zipCode",
+      children: <div>{chooseClinic.zipCode}</div>,
+    };
+
+    let clinic = <></>;
+    if (chooseClinic.clinic !== undefined) {
+      clinic = (
+        <ClinicInfo
+          name={chooseClinic.clinic.clinic}
+          streetAddress={chooseClinic.clinic.clinicAddress}
+          phone={chooseClinic.clinic.clinicTelephone}
+          isFormElement={false}
+        />
+      );
+    }
+    const clinicElement = {
+      labelKey: "Review.clinicSelected",
+      children: clinic,
+    };
+
+    return [zipCodeElement, clinicElement];
+  };
+
+  const formatContactResponses = (
+    contact: ContactData
+  ): ReviewElementProps[] => {
+    const contactResponses: ReviewElementProps[] = [];
+    for (const key in contact) {
+      const castKey = key as keyof typeof contact;
+      contactResponses.push({
+        labelKey: `Contact.${key}`,
+        children:
+          castKey === "phone"
+            ? formatPhone(contact[castKey])
+            : contact[castKey],
+      });
+    }
+    return contactResponses;
+  };
+  // TODO: 📋 Ensure routing works correctly for reviewmode
+  // {{ pathname: "/contact", query: reviewMode }}
+  return (
+    <>
+      <ReviewCollection
+        headerKey="Review.eligibilityTitle"
+        editable={editable}
+        editHref="/eligibility"
+        reviewElements={formatEligibilityResponses(session.eligibility)}
+      />
+      {showHouseholdSize && (
+        <ReviewCollection
+          headerKey="Income.householdSize"
+          editable={editable}
+          editHref="/income"
+          reviewElements={formatIncomeResponses(session.income)}
+        />
+      )}
+      <ReviewCollection
+        headerKey="ChooseClinic.title"
+        editable={editable}
+        editHref="/choose-clinic"
+        reviewElements={formatClinicResponses(session.chooseClinic)}
+      />
+      <ReviewCollection
+        headerKey="Contact.title"
+        editable={editable}
+        editHref="/contact"
+        reviewElements={formatContactResponses(session.contact)}
+      />
+    </>
+  );
+};
+
+export default ReviewSection;

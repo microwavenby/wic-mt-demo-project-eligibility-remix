@@ -1,0 +1,181 @@
+import { Trans } from "react-i18next";
+import { useLocation, useLoaderData, useActionData } from "@remix-run/react";
+import { zfd } from "zod-form-data";
+import { z } from "zod";
+import { withZod } from "@remix-validated-form/with-zod";
+import {
+  ValidatedForm,
+  useIsSubmitting,
+  validationError,
+} from "remix-validated-form";
+import { json, LoaderFunction } from "@remix-run/node";
+import { Button } from "@trussworks/react-uswds";
+import Accordion from "~/components/Accordion";
+import BackLink from "~/components/BackLink";
+import InputChoiceGroup from "~/components/InputChoiceGroup";
+import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
+import { validEligibilityOptions } from "~/utils/dataValidation";
+import { Request } from "@remix-run/node";
+import {
+  serializeFormData,
+  upsertEligibility,
+  upsertEligibilityPage,
+} from "~/utils/db.server";
+import { getBackRoute, getForwardRoute } from "~/utils/routing";
+import { cookieParser } from "~/utils/formSession";
+
+const eligibilitySchema = zfd.formData({
+  residential: zfd.text(),
+  categorical: zfd
+    .repeatable(
+      z.array(zfd.text()).min(1, {
+        message: "You must select at least one option",
+      })
+    )
+    .refine(
+      (adj) =>
+        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
+      {
+        message: `Cannot select None and another option`,
+      }
+    ),
+  previouslyEnrolled: zfd.text(),
+  adjunctive: zfd
+    .repeatable(
+      z.array(zfd.text()).min(1, {
+        message: "You must select at least one option",
+      })
+    )
+    .refine(
+      (adj) =>
+        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
+      {
+        message: `Cannot select None and another option`,
+      }
+    ),
+});
+
+export const eligibilityValidator = withZod(eligibilitySchema);
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const response = await cookieParser(request);
+  return json(response);
+};
+
+import { redirect } from "@remix-run/node";
+
+export const action = async ({ request }: { request: Request }) => {
+  const formData = await request.formData();
+  const validationResult = await eligibilityValidator.validate(formData);
+  const parsedForm = eligibilitySchema.parse(formData);
+  const { eligibilityID } = await cookieParser(request);
+  console.log(`Eligibility ${eligibilityID}`);
+  const eligibilityForm = await upsertEligibility(eligibilityID);
+  console.log(
+    `Using the form with id ${eligibilityForm.eligibility_form_id} updated time ${eligibilityForm.updated_at}`
+  );
+
+  const eligibilityFormPage = await upsertEligibilityPage(
+    eligibilityID,
+    "eligibility",
+    parsedForm
+  );
+  if (
+    parsedForm.residential == "no" ||
+    parsedForm.categorical.includes("none")
+  ) {
+    return redirect("/other-benefits");
+  } else if (parsedForm.adjunctive.includes("none")) {
+    return redirect("/income");
+  }
+  return redirect("/review");
+};
+
+export default function Eligibility() {
+  // Use useEffect() to properly load the data from session storage during react hydration.
+  const { eligibilityID } = useLoaderData();
+  const data = useActionData();
+
+  // Handle back link.
+  const backRoute = getBackRoute();
+
+  // Handle action button.
+  const location = useLocation();
+  const reviewMode = location.hash.includes("review");
+  // Set up action button and routing
+  const actionButtonLabel = reviewMode ? "updateAndReturn" : "continue";
+
+  return (
+    <>
+      <BackLink href={backRoute} />
+      <h1>
+        <Trans i18nKey="Eligibility.header" />
+      </h1>
+      <RequiredQuestionStatement />
+      <ValidatedForm
+        validator={eligibilityValidator}
+        className="usa-form usa-form--large"
+        method="post"
+      >
+        <InputChoiceGroup
+          required
+          titleKey="Eligibility.residential"
+          type="radio"
+          choices={validEligibilityOptions.residential.map((option) => {
+            return {
+              labelKey: `Eligibility.${option}`,
+              name: "residential",
+              value: option,
+            };
+          })}
+        />
+        <InputChoiceGroup
+          required
+          titleKey="Eligibility.categorical"
+          type="checkbox"
+          choices={validEligibilityOptions.categorical.map((option) => {
+            return {
+              labelKey: `Eligibility.${option}`,
+              name: "categorical",
+              value: option,
+            };
+          })}
+          helpElement={
+            <Accordion
+              headerKey="Eligibility.accordionHeader"
+              bodyKey="Eligibility.accordionBody"
+              id="eligibility-accordion"
+            />
+          }
+        />
+        <InputChoiceGroup
+          required
+          titleKey="Eligibility.previouslyEnrolled"
+          type="radio"
+          choices={validEligibilityOptions.previouslyEnrolled.map((option) => {
+            return {
+              labelKey: `Eligibility.${option}`,
+              name: "previouslyEnrolled",
+              value: option,
+            };
+          })}
+        />
+        <InputChoiceGroup
+          required
+          titleKey="Eligibility.adjunctive"
+          type="checkbox"
+          choices={validEligibilityOptions.adjunctive.map((option) => {
+            return {
+              labelKey: `Eligibility.${option}`,
+              name: "adjunctive",
+              value: option,
+            };
+          })}
+        />
+        <Button type="submit">
+          <Trans i18nKey={actionButtonLabel} />
+        </Button>
+      </ValidatedForm>
+    </>
+  );
+}
