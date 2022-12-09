@@ -24,6 +24,25 @@ const pageFlow = [
   "/confirmation",
 ];
 
+export function routeFromEligibility(eligibilityForm: any): string {
+  if (
+    eligibilityForm.residential == "no" ||
+    eligibilityForm.categorical.includes("none")
+  ) {
+    return "/other-benefits";
+  } else if (eligibilityForm.adjunctive.includes("none")) {
+    return "/income";
+  }
+  return "/review";
+}
+
+export function routeFromIncome(incomeForm: any): string {
+  if (incomeForm.householdSize != "") {
+    return "/choose-clinic";
+  }
+  return "";
+}
+
 export function getForwardRoute(): string {
   const location = useLocation();
   const reviewMode = location.hash.includes("review");

@@ -1,9 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { ChangeEvent, ReactElement } from "react";
+import {
+  Dropdown as USWDS_Dropdown,
+  Label,
+  ErrorMessage,
+} from "@trussworks/react-uswds";
 
 import Required from "app/components/Required";
 
 import { i18nKey } from "app/types";
+import { useField } from "remix-validated-form";
 
 export interface DropdownProps {
   handleChange: (e: ChangeEvent<HTMLSelectElement>) => void;
@@ -19,31 +25,38 @@ export interface DropdownProps {
 const Dropdown = (props: DropdownProps): ReactElement => {
   const { handleChange, id, labelKey, options, required, selectedOption } =
     props;
+  const { getInputProps, error } = useField(id);
   let { t } = useTranslation();
   return (
     <>
-      <label className="usa-label" htmlFor={id}>
+      <Label htmlFor={id}>
         {t(labelKey)}
         {required && <Required />}
-      </label>
-      <select
-        className="usa-select"
+      </Label>
+      {error && (
+        <ErrorMessage id="${titleKey}-error-message">{error}</ErrorMessage>
+      )}
+      <USWDS_Dropdown
         id={id}
         name={id}
         onChange={handleChange}
         value={selectedOption}
       >
-        <option value="">
+        <option value="" {...getInputProps({ id: id, label: "" })}>
           -&nbsp;
           {t("select")}
           &nbsp;-
         </option>
         {options.map((option: string) => (
-          <option value={option} key={option}>
+          <option
+            value={option}
+            key={option}
+            {...getInputProps({ id: id, label: option })}
+          >
             {option}
           </option>
         ))}
-      </select>
+      </USWDS_Dropdown>
     </>
   );
 };

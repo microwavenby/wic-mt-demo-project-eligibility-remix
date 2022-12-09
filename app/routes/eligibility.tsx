@@ -8,7 +8,7 @@ import {
   useIsSubmitting,
   validationError,
 } from "remix-validated-form";
-import { json, LoaderFunction } from "@remix-run/node";
+import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Button } from "@trussworks/react-uswds";
 import Accordion from "~/components/Accordion";
 import BackLink from "~/components/BackLink";
@@ -16,12 +16,8 @@ import InputChoiceGroup from "~/components/InputChoiceGroup";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 import { validEligibilityOptions } from "~/utils/dataValidation";
 import { Request } from "@remix-run/node";
-import {
-  serializeFormData,
-  upsertEligibility,
-  upsertEligibilityPage,
-} from "~/utils/db.server";
-import { getBackRoute, getForwardRoute } from "~/utils/routing";
+import { upsertEligibility, upsertEligibilityPage } from "~/utils/db.server";
+import { getBackRoute, routeFromEligibility } from "~/utils/routing";
 import { cookieParser } from "~/utils/formSession";
 
 const eligibilitySchema = zfd.formData({
@@ -62,11 +58,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json(response);
 };
 
-import { redirect } from "@remix-run/node";
-
 export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
   const validationResult = await eligibilityValidator.validate(formData);
+  if (validationResult.error) {
+    console.log(`Validation error: ${validationResult.error}`);
+    return validationError(validationResult.error, validationResult.data);
+  }
   const parsedForm = eligibilitySchema.parse(formData);
   const { eligibilityID } = await cookieParser(request);
   console.log(`Eligibility ${eligibilityID}`);
@@ -80,15 +78,9 @@ export const action = async ({ request }: { request: Request }) => {
     "eligibility",
     parsedForm
   );
-  if (
-    parsedForm.residential == "no" ||
-    parsedForm.categorical.includes("none")
-  ) {
-    return redirect("/other-benefits");
-  } else if (parsedForm.adjunctive.includes("none")) {
-    return redirect("/income");
-  }
-  return redirect("/review");
+  const routeTarget = routeFromEligibility(parsedForm);
+  console.log(`Completed eligibility form; routing to ${routeTarget}`);
+  return redirect(routeTarget);
 };
 
 export default function Eligibility() {

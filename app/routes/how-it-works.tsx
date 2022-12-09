@@ -2,8 +2,6 @@ import { Trans } from "react-i18next";
 import { Alert } from "@trussworks/react-uswds";
 import BackLink from "app/components/BackLink";
 import ButtonLink from "app/components/ButtonLink";
-import { initialSessionData } from "app/utils/sessionData";
-import { useSessionStorage } from "app/utils/useSessionStorage";
 import {
   getBackRoute,
   getForwardRoute,
@@ -13,10 +11,7 @@ import {
 export default function HowItWorks() {
   const listCopyKeys: string[] = ["apply", "eligible", "appointment"];
   const sessionKey = "session";
-  const [session, setSession] = useSessionStorage(
-    sessionKey,
-    initialSessionData
-  );
+
   // Handle back link.
   const backRoute = getBackRoute();
 
