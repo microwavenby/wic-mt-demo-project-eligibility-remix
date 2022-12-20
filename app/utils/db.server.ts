@@ -34,6 +34,45 @@ export const serializeFormData = async (
   return JSON.stringify(flattened);
 };
 
+export const findClinicByName = async (name: string) => {
+  return await db.clinic.findFirst({
+    where: {
+      clinic: name,
+    },
+    select: {
+      clinic: true,
+      clinicAddress: true,
+      clinicTelephone: true,
+    },
+  });
+};
+
+export const findClinics = async (zipcode: string, results: number = 4) => {
+  const clinicsByDistance = await db.zipClinicDistance.findMany({
+    orderBy: {
+      distanceTenthMiles: "asc",
+    },
+    take: results,
+    where: {
+      zip: zipcode,
+    },
+    select: {
+      distance: true,
+      clinic: {
+        select: {
+          clinic: true,
+          clinicAddress: true,
+          clinicTelephone: true,
+        },
+      },
+    },
+  });
+  return clinicsByDistance.map(({ distance, clinic }) => ({
+    ["distance"]: distance,
+    ...clinic,
+  }));
+};
+
 export const upsertEligibility = async (eligibilityID: string) => {
   const existingEligibilityForm = await db.eligibilityForm.upsert({
     where: {
@@ -78,8 +117,20 @@ export const upsertEligibilityPage = async (
   return await db.eligibilityFormPage.create({
     data: {
       eligibility_form_id: eligibilityID,
-      form_route: "eligibility",
+      form_route: page,
       form_data: JSON.stringify(formData),
     },
   });
+};
+
+export const upsertEligibilityAndEligibilityPage = async (
+  eligibilityID: string,
+  page: string,
+  formData: any
+) => {
+  const eligibilityForm = await upsertEligibility(eligibilityID);
+  console.log(
+    `Using the form with eligibilityID ${eligibilityID} updated time ${eligibilityForm.updated_at}`
+  );
+  await upsertEligibilityPage(eligibilityID, page, formData);
 };

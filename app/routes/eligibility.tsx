@@ -16,7 +16,7 @@ import InputChoiceGroup from "~/components/InputChoiceGroup";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 import { validEligibilityOptions } from "~/utils/dataValidation";
 import { Request } from "@remix-run/node";
-import { upsertEligibility, upsertEligibilityPage } from "~/utils/db.server";
+import { upsertEligibilityAndEligibilityPage } from "~/utils/db.server";
 import { getBackRoute, routeFromEligibility } from "~/utils/routing";
 import { cookieParser } from "~/utils/formSession";
 
@@ -67,17 +67,12 @@ export const action = async ({ request }: { request: Request }) => {
   }
   const parsedForm = eligibilitySchema.parse(formData);
   const { eligibilityID } = await cookieParser(request);
-  console.log(`Eligibility ${eligibilityID}`);
-  const eligibilityForm = await upsertEligibility(eligibilityID);
-  console.log(
-    `Using the form with id ${eligibilityForm.eligibility_form_id} updated time ${eligibilityForm.updated_at}`
-  );
-
-  const eligibilityFormPage = await upsertEligibilityPage(
+  await upsertEligibilityAndEligibilityPage(
     eligibilityID,
     "eligibility",
     parsedForm
   );
+
   const routeTarget = routeFromEligibility(parsedForm);
   console.log(`Completed eligibility form; routing to ${routeTarget}`);
   return redirect(routeTarget);
@@ -113,10 +108,10 @@ export default function Eligibility() {
           required
           titleKey="Eligibility.residential"
           type="radio"
+          name="residential"
           choices={validEligibilityOptions.residential.map((option) => {
             return {
-              labelKey: `Eligibility.${option}`,
-              name: "residential",
+              labelElement: <Trans i18nKey={`Eligibility.${option}`} />,
               value: option,
             };
           })}
@@ -125,10 +120,10 @@ export default function Eligibility() {
           required
           titleKey="Eligibility.categorical"
           type="checkbox"
+          name="categorical"
           choices={validEligibilityOptions.categorical.map((option) => {
             return {
-              labelKey: `Eligibility.${option}`,
-              name: "categorical",
+              labelElement: <Trans i18nKey={`Eligibility.${option}`} />,
               value: option,
             };
           })}
@@ -144,10 +139,10 @@ export default function Eligibility() {
           required
           titleKey="Eligibility.previouslyEnrolled"
           type="radio"
+          name="previouslyEnrolled"
           choices={validEligibilityOptions.previouslyEnrolled.map((option) => {
             return {
-              labelKey: `Eligibility.${option}`,
-              name: "previouslyEnrolled",
+              labelElement: <Trans i18nKey={`Eligibility.${option}`} />,
               value: option,
             };
           })}
@@ -156,10 +151,10 @@ export default function Eligibility() {
           required
           titleKey="Eligibility.adjunctive"
           type="checkbox"
+          name="adjunctive"
           choices={validEligibilityOptions.adjunctive.map((option) => {
             return {
-              labelKey: `Eligibility.${option}`,
-              name: "adjunctive",
+              labelElement: <Trans i18nKey={`Eligibility.${option}`} />,
               value: option,
             };
           })}

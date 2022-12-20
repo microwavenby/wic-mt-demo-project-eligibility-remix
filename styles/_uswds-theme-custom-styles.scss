@@ -52,7 +52,7 @@ i.e.
 // and applies direct css onto all those elements. To overcome it, we need
 // to manually override the parent element span using the unfortunate !important
 // See https://github.com/vercel/next.js/discussions/18312
-.footer .logos > span {
+.footer .logos > img {
   margin-right: 1.5rem !important;
 }
 
@@ -66,7 +66,7 @@ i.e.
 // A logical content grouping with spacing below.
 .content-group,
 .usa-fieldset {
-  @include u-padding-bottom(3);
+  @include u-padding-bottom(2);
 
   p:last-child {
     margin-bottom: 0;

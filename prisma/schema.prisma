@@ -26,3 +26,26 @@ model EligibilityFormPage {
   form_data                Json
   updated_at               DateTime        @updatedAt @db.Timestamptz
 }
+
+model Clinic {
+  clinicID          Int                 @id
+  agency            String
+  agencyAddress     String
+  agencyTelephone   String
+  clinic            String
+  clinicAddress     String
+  clinicTelephone   String
+  county            String
+  zip               String
+  ZipClinicDistance ZipClinicDistance[]
+}
+
+model ZipClinicDistance {
+  zip                String
+  clinicID           Int
+  clinic             Clinic @relation(fields: [clinicID], references: [clinicID])
+  distance           String
+  distanceTenthMiles Int
+
+  @@id([zip, clinicID])
+}

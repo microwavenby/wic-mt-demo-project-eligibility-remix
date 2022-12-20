@@ -33,14 +33,28 @@ export function routeFromEligibility(eligibilityForm: any): string {
   } else if (eligibilityForm.adjunctive.includes("none")) {
     return "/income";
   }
-  return "/review";
+  return "/choose-clinic";
 }
 
 export function routeFromIncome(incomeForm: any): string {
   if (incomeForm.householdSize != "") {
     return "/choose-clinic";
   }
-  return "";
+  return "/income";
+}
+
+export function routeFromClinic(clinic: any): string {
+  if (clinic) {
+    return "/contact";
+  }
+  return "/choose-clinic";
+}
+
+export function routeFromContact(contact: any): string {
+  if (contact) {
+    return "/review";
+  }
+  return "/contact";
 }
 
 export function getForwardRoute(): string {

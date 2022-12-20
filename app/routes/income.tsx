@@ -1,11 +1,10 @@
 import { useActionData, useLoaderData, useLocation } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Trans, useTranslation } from "react-i18next";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import Accordion from "app/components/Accordion";
 import BackLink from "app/components/BackLink";
-import ButtonLink from "app/components/ButtonLink";
 import Dropdown from "app/components/Dropdown";
 import RequiredQuestionStatement from "app/components/RequiredQuestionStatement";
 import StyledLink from "app/components/StyledLink";
@@ -15,18 +14,12 @@ import { Table, Fieldset, Button } from "@trussworks/react-uswds";
 import { IncomeData, IncomeDataMap, parseObjectAsIncome } from "app/types";
 import incomeData from "public/data/income.json";
 
-import { isValidIncome } from "app/utils/dataValidation";
-import {
-  getBackRoute,
-  getForwardRoute,
-  hasRoutingIssues,
-  routeFromIncome,
-} from "app/utils/routing";
+import { getBackRoute, routeFromIncome } from "app/utils/routing";
 import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { cookieParser } from "~/utils/formSession";
-import { upsertEligibility, upsertEligibilityPage } from "~/utils/db.server";
+import { upsertEligibilityAndEligibilityPage } from "~/utils/db.server";
 
 const incomeSchema = zfd.formData({
   householdSize: zfd.text(
@@ -51,13 +44,7 @@ export const action = async ({ request }: { request: Request }) => {
   }
   const parsedForm = incomeSchema.parse(formData);
   const { eligibilityID } = await cookieParser(request);
-  console.log(`Eligibility ${eligibilityID}`);
-  const eligibilityForm = await upsertEligibility(eligibilityID);
-  console.log(
-    `Using the form with id ${eligibilityForm.eligibility_form_id} updated time ${eligibilityForm.updated_at}`
-  );
-
-  const eligibilityFormPage = await upsertEligibilityPage(
+  await upsertEligibilityAndEligibilityPage(
     eligibilityID,
     "income",
     parsedForm

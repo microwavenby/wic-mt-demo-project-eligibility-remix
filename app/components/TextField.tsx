@@ -4,52 +4,66 @@ import { ChangeEvent, ReactElement } from "react";
 import Required from "app/components/Required";
 
 import { i18nKey } from "app/types";
+import {
+  ErrorMessage,
+  Label,
+  Textarea,
+  TextInput,
+} from "@trussworks/react-uswds";
+import { useField } from "remix-validated-form";
 
 export type TextFieldProps = {
-  handleChange: (
+  handleChange?: (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
   ) => void;
   id: string;
   labelKey: i18nKey;
   required?: boolean;
   type?: "input" | "textarea";
-  value: string;
+  inputType:
+    | "number"
+    | "search"
+    | "text"
+    | "email"
+    | "password"
+    | "tel"
+    | "url";
+  value?: string;
 };
 
 const TextField = (props: TextFieldProps): ReactElement => {
-  const { handleChange, id, labelKey, required, type, value } = props;
-  let textfield: ReactElement;
+  const {
+    handleChange,
+    id,
+    labelKey,
+    required,
+    type,
+    inputType,
+    value,
+    ...otherProps
+  } = props;
   let { t } = useTranslation();
-  if (type === "textarea") {
-    textfield = (
-      <textarea
-        className="usa-textarea"
-        id={id}
-        name={id}
-        onChange={handleChange}
-        role="textbox"
-        value={value}
-      />
-    );
-  } else {
-    textfield = (
-      <input
-        className="usa-input"
-        id={id}
-        name={id}
-        onChange={handleChange}
-        role="textbox"
-        value={value}
-      />
-    );
-  }
+  const { getInputProps, error } = useField(id);
+  const TextTypeClass = type == "textarea" ? Textarea : TextInput;
+
   return (
     <>
-      <label className="usa-label" htmlFor={id}>
+      <Label htmlFor={id}>
         {t(labelKey)}
         {required && <Required />}
-      </label>
-      {textfield}
+      </Label>
+      {error && (
+        <ErrorMessage id="${titleKey}-error-message">{error}</ErrorMessage>
+      )}
+      <TextTypeClass
+        onChange={handleChange}
+        {...getInputProps({
+          id: id,
+          type: inputType,
+          value: value,
+          ...otherProps,
+        })}
+      />
     </>
   );
 };
