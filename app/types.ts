@@ -17,7 +17,9 @@ export type Clinic = {
 };
 
 export type ChooseClinicData = {
-  clinic: Clinic | undefined;
+  clinic: string;
+  clinicAddress: string;
+  clinicTelephone: string;
   zipCode: string;
 };
 
@@ -33,6 +35,13 @@ export type EligibilityData = {
   categorical: string[];
   previouslyEnrolled: string;
   adjunctive: string[];
+};
+
+export type EligibilityPagesType = {
+  clinic?: ChooseClinicData;
+  income?: IncomeData;
+  eligibility?: EligibilityData;
+  contact?: ContactData;
 };
 
 export type IncomeData = {
@@ -56,11 +65,11 @@ export function parseObjectAsIncome(raw: any) {
 }
 
 export type SessionData = {
-  chooseClinic: ChooseClinicData;
+  chooseClinic?: ChooseClinicData;
   contact: ContactData;
   eligibility: EligibilityData;
   income: IncomeData;
-  submitted: boolean;
+  submitted?: boolean;
 };
 
 export interface ReadSession {

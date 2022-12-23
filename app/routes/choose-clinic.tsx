@@ -135,7 +135,7 @@ export const action = async ({ request }: { request: Request }) => {
     );
   }
   const { eligibilityID } = await cookieParser(request);
-  await upsertEligibilityAndEligibilityPage(eligibilityID, "clinic", {
+  await upsertEligibilityAndEligibilityPage(eligibilityID, "choose-clinic", {
     zipcode: zipcode,
     ...clinic,
   });

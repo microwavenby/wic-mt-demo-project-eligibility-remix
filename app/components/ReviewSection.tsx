@@ -11,13 +11,13 @@ import type {
   ContactData,
   EligibilityData,
   IncomeData,
-  SessionData,
+  EligibilityPagesType,
 } from "app/types";
 import { formatPhone } from "app/utils/dataFormatting";
 
 export type ReviewSectionProps = {
   editable: boolean;
-  session: SessionData;
+  session: EligibilityPagesType;
 };
 
 const ReviewSection = (props: ReviewSectionProps): ReactElement => {
@@ -26,12 +26,15 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
   const reviewMode = { mode: "review" };
 
   const showHouseholdSize =
-    session.income.householdSize !== "" &&
-    session.eligibility.adjunctive.includes("none");
+    session.income && session?.eligibility?.adjunctive?.includes("none");
 
   const formatEligibilityResponses = (
-    eligibility: EligibilityData
+    eligibility?: EligibilityData
   ): ReviewElementProps[] => {
+    if (!eligibility) {
+      return [];
+    }
+
     const categoricalKeys = eligibility.categorical.map((key: string) => {
       return `Eligibility.${key}`;
     });
@@ -59,7 +62,10 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
     ];
   };
 
-  const formatIncomeResponses = (income: IncomeData) => {
+  const formatIncomeResponses = (income?: IncomeData) => {
+    if (!income) {
+      return [];
+    }
     return [
       {
         labelKey: "Income.householdSize",
@@ -69,8 +75,11 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
   };
 
   const formatClinicResponses = (
-    chooseClinic: ChooseClinicData
+    chooseClinic?: ChooseClinicData
   ): ReviewElementProps[] => {
+    if (!chooseClinic) {
+      return [];
+    }
     const zipCodeElement = {
       labelKey: "Review.zipCode",
       children: <div>{chooseClinic.zipCode}</div>,
@@ -80,9 +89,9 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
     if (chooseClinic.clinic !== undefined) {
       clinic = (
         <ClinicInfo
-          name={chooseClinic.clinic.clinic}
-          streetAddress={chooseClinic.clinic.clinicAddress}
-          phone={chooseClinic.clinic.clinicTelephone}
+          name={chooseClinic.clinic}
+          streetAddress={chooseClinic.clinicAddress}
+          phone={chooseClinic.clinicTelephone}
           isFormElement={false}
         />
       );
@@ -96,8 +105,11 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
   };
 
   const formatContactResponses = (
-    contact: ContactData
+    contact?: ContactData
   ): ReviewElementProps[] => {
+    if (!contact) {
+      return [];
+    }
     const contactResponses: ReviewElementProps[] = [];
     for (const key in contact) {
       const castKey = key as keyof typeof contact;
@@ -133,7 +145,7 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
         headerKey="ChooseClinic.title"
         editable={editable}
         editHref="/choose-clinic"
-        reviewElements={formatClinicResponses(session.chooseClinic)}
+        reviewElements={formatClinicResponses(session.clinic)}
       />
       <ReviewCollection
         headerKey="Contact.title"

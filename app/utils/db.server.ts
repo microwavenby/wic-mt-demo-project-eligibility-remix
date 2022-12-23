@@ -1,6 +1,11 @@
-import { PrismaClient } from "@prisma/client";
-import { stringify } from "uuid";
-
+import { Prisma, PrismaClient } from "@prisma/client";
+import {
+  EligibilityPagesType,
+  EligibilityData,
+  ChooseClinicData,
+  ContactData,
+  IncomeData,
+} from "~/types";
 let db: PrismaClient;
 
 declare global {
@@ -92,6 +97,33 @@ export const upsertEligibility = async (eligibilityID: string) => {
   return existingEligibilityForm;
 };
 
+export const findEligibilityPages = async (
+  eligibilityID: string
+): Promise<EligibilityPagesType> => {
+  const existingEligibilityPages = await db.eligibilityFormPage.findMany({
+    where: {
+      eligibility_form_id: eligibilityID,
+    },
+    select: {
+      form_route: true,
+      form_data: true,
+    },
+  });
+  const mapped = new Map(
+    existingEligibilityPages.map((obj) => [
+      obj.form_route,
+      obj.form_data as Prisma.JsonObject,
+    ])
+  );
+  const pageData: EligibilityPagesType = {
+    eligibility: mapped.get("eligibility") as EligibilityData,
+    income: mapped.get("income") as IncomeData,
+    clinic: mapped.get("choose-clinic") as ChooseClinicData,
+    contact: mapped.get("contact") as ContactData,
+  };
+  return pageData;
+};
+
 export const upsertEligibilityPage = async (
   eligibilityID: string,
   page: string,
@@ -110,7 +142,7 @@ export const upsertEligibilityPage = async (
           existingEligibilityPage.eligibility_form_page_id,
       },
       data: {
-        form_data: JSON.stringify(formData),
+        form_data: formData,
       },
     });
   }
@@ -118,7 +150,7 @@ export const upsertEligibilityPage = async (
     data: {
       eligibility_form_id: eligibilityID,
       form_route: page,
-      form_data: JSON.stringify(formData),
+      form_data: formData,
     },
   });
 };

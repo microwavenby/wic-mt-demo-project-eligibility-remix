@@ -1,16 +1,13 @@
 import { Trans } from "react-i18next";
 // import { PatternFormat } from "react-number-format";
-import { json, LoaderFunction, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { PatternFormat } from "react-number-format";
 import { Alert, Button, Fieldset } from "@trussworks/react-uswds";
 import BackLink from "~/components/BackLink";
-import ButtonLink from "~/components/ButtonLink";
 import Required from "~/components/Required";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 import TextField from "~/components/TextField";
 
-import type { ContactData } from "~/types";
-import { isValidContact } from "~/utils/dataValidation";
 import { useLocation } from "@remix-run/react";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { zfd } from "zod-form-data";
