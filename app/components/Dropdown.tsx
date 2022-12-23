@@ -49,9 +49,8 @@ const Dropdown = (props: DropdownProps): ReactElement => {
         </option>
         {options.map((option: string) => (
           <option
-            value={option}
             key={option}
-            {...getInputProps({ id: id, label: option })}
+            {...getInputProps({ id: id, label: option, value: option })}
           >
             {option}
           </option>

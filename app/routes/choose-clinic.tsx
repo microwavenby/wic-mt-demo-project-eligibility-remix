@@ -6,7 +6,7 @@ import BackLink from "~/components/BackLink";
 import Required from "~/components/Required";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 
-import type { Clinic } from "~/types";
+import type { ChooseClinicData, Clinic } from "~/types";
 import { isValidZipCode } from "~/utils/dataValidation";
 import {
   Form,
@@ -14,19 +14,21 @@ import {
   useActionData,
   useCatch,
   useLoaderData,
-  useLocation,
 } from "@remix-run/react";
 import { Alert, Label, TextInput, Button, Icon } from "@trussworks/react-uswds";
 import { cookieParser } from "~/utils/formSession";
 import {
   findClinics,
   findClinicByName,
-  upsertEligibility,
-  upsertEligibilityPage,
   upsertEligibilityAndEligibilityPage,
+  findEligibilityPageData,
 } from "~/utils/db.server";
 import InputChoiceGroup from "~/components/InputChoiceGroup";
-import { ValidatedForm, validationError } from "remix-validated-form";
+import {
+  setFormDefaults,
+  ValidatedForm,
+  validationError,
+} from "remix-validated-form";
 import { zfd } from "zod-form-data";
 import { withZod } from "@remix-validated-form/with-zod";
 import ClinicInfo from "~/components/ClinicInfo";
@@ -75,47 +77,67 @@ export async function loader({ request }: { request: Request }) {
   const { eligibilityID, headers } = await cookieParser(request);
 
   const url = new URL(request.url);
-
   const zipcode = url.searchParams.get("zip");
+  const reviewMode = url.searchParams.get("mode") == "review";
+  const existingClinicPage = (await findEligibilityPageData(
+    eligibilityID,
+    "choose-clinic"
+  )) as ChooseClinicData;
   console.log(
     `QUERY PARMS ${zipcode} IS IT VALID? ${zipcode && isValidZipCode(zipcode)}`
   );
+
   if (!zipcode) {
     return json({
       eligibilityID: eligibilityID,
       headers: headers,
+      reviewMode: reviewMode,
+    });
+  }
+  if (existingClinicPage && zipcode == existingClinicPage.zipCode) {
+    return json({
+      eligibilityID: eligibilityID,
+      headers: headers,
+      reviewMode: reviewMode,
+      zipCode: zipcode,
+      clinics: [existingClinicPage],
+      ...setFormDefaults("clinicForm", existingClinicPage),
     });
   }
   if (!isValidZipCode(zipcode)) {
     console.log(`ERROR: Bad zipcode ${zipcode}`);
     return json({
-      eligibilityID: eligibilityID,
       invalidZip: true,
+      eligibilityID: eligibilityID,
       headers: headers,
+      reviewMode: reviewMode,
     });
   }
   const clinicsByDistance = await findClinics(zipcode, 8);
   if (!clinicsByDistance.length) {
     console.log(`ERROR: No results for ${zipcode}`);
     return json({
-      eligibilityID: eligibilityID,
       noResults: true,
-      zipcode: zipcode,
+      eligibilityID: eligibilityID,
       headers: headers,
+      reviewMode: reviewMode,
+      zipCode: zipcode,
     });
   }
   console.log(`Found ${clinicsByDistance.length} clinics for zip ${zipcode}`);
   return json({
-    eligibilityID: eligibilityID,
-    zipcode: zipcode,
     clinics: clinicsByDistance,
-    headers: headers,
     noResults: zipcode && !clinicsByDistance.length,
+    eligibilityID: eligibilityID,
+    headers: headers,
+    reviewMode: reviewMode,
+    zipCode: zipcode,
   });
 }
 
 export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
+  const reviewMode = formData.get("action") == "updateAndReturn" ? true : false;
   const url = new URL(request.url);
   const zipcode = url.searchParams.get("zip");
   const validationResult = await clinicValidator.validate(formData);
@@ -136,25 +158,22 @@ export const action = async ({ request }: { request: Request }) => {
   }
   const { eligibilityID } = await cookieParser(request);
   await upsertEligibilityAndEligibilityPage(eligibilityID, "choose-clinic", {
-    zipcode: zipcode,
+    zipCode: zipcode,
     ...clinic,
   });
 
-  const routeTarget = routeFromClinic(clinic);
+  const routeTarget = routeFromClinic(clinic, reviewMode);
   console.log(`Completed clinic form; routing to ${routeTarget}`);
   return redirect(routeTarget);
 };
 
 export default function ChooseClinic() {
   // Initialize form as a state using blank values.
-  const { clinics, zipcode, noResults, invalidZip } = useLoaderData();
+  const { clinics, zipCode, noResults, invalidZip, reviewMode } =
+    useLoaderData();
   const data = useActionData();
 
   const { t } = useTranslation("common");
-
-  // Page specific states & consts.
-  const location = useLocation();
-  const reviewMode = location.hash.includes("review");
 
   const actionButtonLabel = reviewMode
     ? "updateAndReturn"
@@ -227,9 +246,14 @@ export default function ChooseClinic() {
               id="search-field-en-small"
               name="zip"
               type="search"
-              defaultValue={zipcode}
+              defaultValue={zipCode}
               onChange={(e) => handleZipCodeChange()}
             />
+            {reviewMode ? (
+              <input type="hidden" name="mode" value="review" />
+            ) : (
+              ""
+            )}
             <Button type="submit">
               <Icon.Search size={3} />
             </Button>
@@ -245,6 +269,7 @@ export default function ChooseClinic() {
         className="usa-form usa-form--large"
         validator={clinicValidator}
         method="post"
+        id="clinicForm"
       >
         <InputChoiceGroup
           required
@@ -278,8 +303,8 @@ export default function ChooseClinic() {
           </Button>
         )}{" "}
         <div />
-        {filteredClinics?.length > 1 && (
-          <Button type="submit">
+        {filteredClinics?.length >= 1 && (
+          <Button type="submit" value={actionButtonLabel} name="action">
             <Trans i18nKey={actionButtonLabel} />
           </Button>
         )}

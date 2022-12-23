@@ -16,7 +16,6 @@ export type ButtonLinkProps = {
 
 const ButtonLink = (props: ButtonLinkProps): ReactElement => {
   const { disabled, href, labelKey, style, onClick } = props;
-  console.log(`Link to {href}`);
   return (
     <Link to={href}>
       <Button

@@ -7,6 +7,7 @@ import {
   ValidatedForm,
   useIsSubmitting,
   validationError,
+  setFormDefaults,
 } from "remix-validated-form";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Button } from "@trussworks/react-uswds";
@@ -16,9 +17,13 @@ import InputChoiceGroup from "~/components/InputChoiceGroup";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 import { validEligibilityOptions } from "~/utils/dataValidation";
 import { Request } from "@remix-run/node";
-import { upsertEligibilityAndEligibilityPage } from "~/utils/db.server";
+import {
+  findEligibilityPageData,
+  upsertEligibilityAndEligibilityPage,
+} from "~/utils/db.server";
 import { getBackRoute, routeFromEligibility } from "~/utils/routing";
 import { cookieParser } from "~/utils/formSession";
+import { EligibilityData } from "~/types";
 
 const eligibilitySchema = zfd.formData({
   residential: zfd.text(),
@@ -54,8 +59,19 @@ const eligibilitySchema = zfd.formData({
 export const eligibilityValidator = withZod(eligibilitySchema);
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const response = await cookieParser(request);
-  return json(response);
+  const url = new URL(request.url);
+  const reviewMode = url.searchParams.get("mode") == "review";
+  const { eligibilityID, headers } = await cookieParser(request);
+  const existingEligibilityPage = (await findEligibilityPageData(
+    eligibilityID,
+    "eligibility"
+  )) as EligibilityData;
+  return json({
+    eligibilityID: eligibilityID,
+    reviewMode: reviewMode,
+    ...headers,
+    ...setFormDefaults("eligiblityForm", existingEligibilityPage),
+  });
 };
 
 export const action = async ({ request }: { request: Request }) => {
@@ -72,26 +88,25 @@ export const action = async ({ request }: { request: Request }) => {
     "eligibility",
     parsedForm
   );
-
-  const routeTarget = routeFromEligibility(parsedForm);
+  const reviewMode = formData.get("action") == "updateAndReturn" ? true : false;
+  const routeTarget = routeFromEligibility(parsedForm, reviewMode);
   console.log(`Completed eligibility form; routing to ${routeTarget}`);
   return redirect(routeTarget);
 };
 
+type loaderData = Awaited<ReturnType<typeof loader>>;
+
 export default function Eligibility() {
   // Use useEffect() to properly load the data from session storage during react hydration.
-  const { eligibilityID } = useLoaderData();
+  const { reviewMode } = useLoaderData<loaderData>();
   const data = useActionData();
 
   // Handle back link.
   const backRoute = getBackRoute();
 
   // Handle action button.
-  const location = useLocation();
-  const reviewMode = location.hash.includes("review");
   // Set up action button and routing
   const actionButtonLabel = reviewMode ? "updateAndReturn" : "continue";
-
   return (
     <>
       <BackLink href={backRoute} />
@@ -103,6 +118,7 @@ export default function Eligibility() {
         validator={eligibilityValidator}
         className="usa-form usa-form--large"
         method="post"
+        id="eligiblityForm"
       >
         <InputChoiceGroup
           required
@@ -159,7 +175,7 @@ export default function Eligibility() {
             };
           })}
         />
-        <Button type="submit">
+        <Button type="submit" value={actionButtonLabel} name="action">
           <Trans i18nKey={actionButtonLabel} />
         </Button>
       </ValidatedForm>

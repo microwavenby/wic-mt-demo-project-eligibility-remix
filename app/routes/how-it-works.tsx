@@ -2,11 +2,7 @@ import { Trans } from "react-i18next";
 import { Alert } from "@trussworks/react-uswds";
 import BackLink from "app/components/BackLink";
 import ButtonLink from "app/components/ButtonLink";
-import {
-  getBackRoute,
-  getForwardRoute,
-  hasRoutingIssues,
-} from "app/utils/routing";
+import { getBackRoute, getForwardRoute } from "app/utils/routing";
 
 export default function HowItWorks() {
   const listCopyKeys: string[] = ["apply", "eligible", "appointment"];

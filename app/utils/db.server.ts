@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { Location } from "@remix-run/react";
 import {
   EligibilityPagesType,
   EligibilityData,
@@ -26,18 +27,7 @@ if (process.env.NODE_ENV === "production") {
 
 export { db };
 
-export const serializeFormData = async (
-  data: FormData,
-  complexFields: Array<string>
-) => {
-  const flattened = Object.fromEntries(
-    Array.from(data.keys()).map((key) => [
-      key,
-      complexFields.includes(key) ? data.getAll(key) : data.get(key),
-    ])
-  );
-  return JSON.stringify(flattened);
-};
+type pathType = "eligibility" | "income" | "choose-clinic" | "contact";
 
 export const findClinicByName = async (name: string) => {
   return await db.clinic.findFirst({
@@ -122,6 +112,22 @@ export const findEligibilityPages = async (
     contact: mapped.get("contact") as ContactData,
   };
   return pageData;
+};
+
+export const findEligibilityPageData = async (
+  eligibilityID: string,
+  path: pathType
+) => {
+  const eligibilityPage = await db.eligibilityFormPage.findFirst({
+    where: {
+      eligibility_form_id: eligibilityID,
+      form_route: path,
+    },
+    select: {
+      form_data: true,
+    },
+  });
+  return eligibilityPage?.form_data;
 };
 
 export const upsertEligibilityPage = async (

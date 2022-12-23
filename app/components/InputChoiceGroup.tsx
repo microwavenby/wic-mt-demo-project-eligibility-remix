@@ -7,6 +7,7 @@ import {
   ErrorMessage,
   Label,
 } from "@trussworks/react-uswds";
+
 import Required from "app/components/Required";
 import { useField } from "remix-validated-form";
 import { i18nKey } from "app/types";
@@ -29,6 +30,7 @@ export type InputChoiceGroupProps = {
 const InputChoiceGroup = (props: InputChoiceGroupProps): ReactElement => {
   const { choices, titleKey, required, type, helpElement, name } = props;
   const { getInputProps, error } = useField(name);
+
   const InputTypeClass = type == "checkbox" ? Checkbox : Radio;
   let { t } = useTranslation();
   if (!choices?.length) {
@@ -47,12 +49,13 @@ const InputChoiceGroup = (props: InputChoiceGroupProps): ReactElement => {
         {helpElement}
         {choices?.map((choice: Choice) => (
           <InputTypeClass
-            value={choice.value}
             tile={true}
             key={`${name}-${choice.value}`}
             {...getInputProps({
               id: `${name}-${choice.value}`,
               label: choice.labelElement,
+              type: type,
+              value: choice.value,
             })}
           />
         ))}

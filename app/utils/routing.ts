@@ -24,7 +24,13 @@ const pageFlow = [
   "/confirmation",
 ];
 
-export function routeFromEligibility(eligibilityForm: any): string {
+export function routeFromEligibility(
+  eligibilityForm: any,
+  reviewMode: boolean
+): string {
+  if (reviewMode) {
+    return "/review";
+  }
   if (
     eligibilityForm.residential == "no" ||
     eligibilityForm.categorical.includes("none")
@@ -33,19 +39,24 @@ export function routeFromEligibility(eligibilityForm: any): string {
   } else if (eligibilityForm.adjunctive.includes("none")) {
     return "/income";
   }
+
   return "/choose-clinic";
 }
 
-export function routeFromIncome(incomeForm: any): string {
-  if (incomeForm.householdSize != "") {
+export function routeFromIncome(incomeForm: any, reviewMode: boolean): string {
+  if (incomeForm.householdSize != "" && !reviewMode) {
     return "/choose-clinic";
+  } else if (incomeForm.householdSize != "") {
+    return "/review";
   }
   return "/income";
 }
 
-export function routeFromClinic(clinic: any): string {
-  if (clinic) {
+export function routeFromClinic(clinic: any, reviewMode: boolean): string {
+  if (clinic && !reviewMode) {
     return "/contact";
+  } else if (clinic) {
+    return "/review";
   }
   return "/choose-clinic";
 }
@@ -172,87 +183,6 @@ export function getBackRoute(): string {
     // Unknown page! It probably doesn't have a back link.
     else {
       return "";
-    }
-  }
-}
-
-export function hasRoutingIssues(
-  session: SessionData | ((value: SessionData) => void)
-) {
-  const location = useLocation();
-
-  const pass = {
-    error: false,
-    cause: "",
-  };
-  // These pages have restricted access based on user data.
-  // All other pages have no routing issues.
-  const restrictedPages: RestrictedPages = {
-    "/income": ["/eligibility"],
-    "/choose-clinic": ["/eligibility", "/income"],
-    "/contact": ["/eligibility", "/income", "/choose-clinic"],
-    "/review": ["/eligibility", "/income", "/choose-clinic", "/contact"],
-  };
-  if (!Object.keys(restrictedPages).includes(location.pathname)) {
-    return pass;
-  } else {
-    // Same as getBackLink(), typescript warns that session might be a function.
-    if (typeof session === "function") {
-      throw new Error("Routing error: expected a session, but none was found");
-    }
-    // If it's not, handle each restricted page.
-    else {
-      for (
-        let i = 0, len = restrictedPages[location.pathname].length;
-        i < len;
-        i++
-      ) {
-        const check = restrictedPages[location.pathname][i];
-        // Check first for /eligibility requirements.
-        if (
-          check === "/eligibility" &&
-          !isValidEligibility(session.eligibility)
-        ) {
-          return {
-            error: true,
-            cause: "eligibility",
-          };
-        }
-
-        // Then, check for /income requirements.
-        if (
-          check === "/income" &&
-          session.eligibility.adjunctive.includes("none") &&
-          !isValidIncome(session.income)
-        ) {
-          return {
-            error: true,
-            cause: "income",
-          };
-        }
-
-        // Then, check for /choose-clinic requirements.
-        if (
-          check === "/choose-clinic" &&
-          !isValidChooseClinic(session.chooseClinic)
-        ) {
-          return {
-            error: true,
-            cause: "choose-clinic",
-          };
-        }
-
-        // Then, check for /contact requirements.
-        if (check === "/contact" && !isValidContact(session.contact)) {
-          return {
-            error: true,
-            cause: "contact",
-          };
-        }
-      }
-
-      // If none of the other checks failed, pass.
-      return pass;
     }
   }
 }

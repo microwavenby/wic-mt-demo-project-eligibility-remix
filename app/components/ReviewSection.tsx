@@ -23,7 +23,6 @@ export type ReviewSectionProps = {
 const ReviewSection = (props: ReviewSectionProps): ReactElement => {
   const { editable, session } = props;
   let { t } = useTranslation();
-  const reviewMode = { mode: "review" };
 
   const showHouseholdSize =
     session.income && session?.eligibility?.adjunctive?.includes("none");
@@ -123,34 +122,33 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
     }
     return contactResponses;
   };
-  // TODO: 📋 Ensure routing works correctly for reviewmode
-  // {{ pathname: "/contact", query: reviewMode }}
+
   return (
     <>
       <ReviewCollection
         headerKey="Review.eligibilityTitle"
         editable={editable}
-        editHref="/eligibility"
+        editHref="/eligibility?mode=review"
         reviewElements={formatEligibilityResponses(session.eligibility)}
       />
       {showHouseholdSize && (
         <ReviewCollection
           headerKey="Income.householdSize"
           editable={editable}
-          editHref="/income"
+          editHref="/income?mode=review"
           reviewElements={formatIncomeResponses(session.income)}
         />
       )}
       <ReviewCollection
         headerKey="ChooseClinic.title"
         editable={editable}
-        editHref="/choose-clinic"
+        editHref={`/choose-clinic?mode=review&zip=${session.clinic?.zipCode}`}
         reviewElements={formatClinicResponses(session.clinic)}
       />
       <ReviewCollection
         headerKey="Contact.title"
         editable={editable}
-        editHref="/contact"
+        editHref="/contact?mode=review"
         reviewElements={formatContactResponses(session.contact)}
       />
     </>

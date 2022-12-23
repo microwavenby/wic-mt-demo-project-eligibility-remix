@@ -1,4 +1,4 @@
-import { useActionData, useLoaderData, useLocation } from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Trans, useTranslation } from "react-i18next";
 import { ChangeEvent, useState } from "react";
@@ -19,7 +19,10 @@ import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { cookieParser } from "~/utils/formSession";
-import { upsertEligibilityAndEligibilityPage } from "~/utils/db.server";
+import {
+  findEligibilityPageData,
+  upsertEligibilityAndEligibilityPage,
+} from "~/utils/db.server";
 
 const incomeSchema = zfd.formData({
   householdSize: zfd.text(
@@ -31,12 +34,29 @@ const incomeSchema = zfd.formData({
 
 export const incomeValidator = withZod(incomeSchema);
 
-export const loader: LoaderFunction = async () => {
-  return json<IncomeDataMap>(incomeData);
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+  const reviewMode = url.searchParams.get("mode") == "review";
+  const { eligibilityID, headers } = await cookieParser(request);
+  const existingIncomePage = (await findEligibilityPageData(
+    eligibilityID,
+    "income"
+  )) as IncomeData;
+  console.log(`FOUND INCOME ${JSON.stringify(existingIncomePage)}`);
+  return json({
+    eligibilityID: eligibilityID,
+    reviewMode: reviewMode,
+    income: incomeData as IncomeDataMap,
+    selected: existingIncomePage,
+    ...headers,
+  });
 };
+
+type loaderData = Awaited<ReturnType<typeof loader>>;
 
 export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
+  const reviewMode = formData.get("action") == "updateAndReturn" ? true : false;
   const validationResult = await incomeValidator.validate(formData);
   if (validationResult.error) {
     console.log(`Validation error: ${validationResult.error}`);
@@ -49,24 +69,25 @@ export const action = async ({ request }: { request: Request }) => {
     "income",
     parsedForm
   );
-  const routeTarget = routeFromIncome(parsedForm);
+  const routeTarget = routeFromIncome(parsedForm, reviewMode);
   console.log(`Completed income form; routing to ${routeTarget}`);
   return redirect(routeTarget);
 };
 
 export default function Income() {
-  const incomeData = parseObjectAsIncome(useLoaderData());
+  const { income, reviewMode, selected } = useLoaderData<loaderData>();
+  const incomeData = parseObjectAsIncome(income);
   const data = useActionData();
-
-  const location = useLocation();
-  const reviewMode = location.hash.includes("review");
   // Handle back link.
   const backRoute = getBackRoute();
+  const [selectedSize, setSelectedSize] = useState(
+    selected?.householdSize || ""
+  );
 
   // Handle action button.
   // Initialize form as a state with blank values.
   const initialIncomeData: IncomeData = {
-    householdSize: "",
+    householdSize: selectedSize,
   };
   const [incomeState, setIncomeState] = useState<IncomeData>(initialIncomeData);
 
@@ -93,6 +114,7 @@ export default function Income() {
   // Handle form element changes.
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value, name }: { value: string; name: string } = e.target;
+    setSelectedSize(value);
     const newIncomeState = { ...incomeState, [name]: value };
     // Update the income state.
     setIncomeState(newIncomeState);
@@ -121,7 +143,7 @@ export default function Income() {
         </p>
       </div>
 
-      <ValidatedForm validator={incomeValidator} method="post">
+      <ValidatedForm validator={incomeValidator} method="post" id="incomeForm">
         <Fieldset>
           <h2>
             <Trans i18nKey="Income.householdSizeHeader" />
@@ -137,6 +159,7 @@ export default function Income() {
             handleChange={handleChange}
             options={householdSizes}
             required={true}
+            selectedOption={selectedSize}
           />
         </Fieldset>
 
@@ -171,7 +194,7 @@ export default function Income() {
             />
           </p>
         </Fieldset>
-        <Button type="submit">
+        <Button type="submit" value={actionButtonLabel} name="action">
           <Trans i18nKey={actionButtonLabel} />
         </Button>
       </ValidatedForm>

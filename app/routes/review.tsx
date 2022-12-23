@@ -5,6 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { cookieParser } from "~/utils/formSession";
 import ReviewSection from "~/components/ReviewSection";
+import { Button } from "@trussworks/react-uswds";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { eligibilityID, headers } = await cookieParser(request);
@@ -32,6 +33,9 @@ export default function Review() {
         <Trans i18nKey="Review.subHeader" />
       </p>
       <ReviewSection editable={true} session={eligibilityPages} />
+      <Button className="margin-top-6" type="submit">
+        {t("Review.button")}
+      </Button>
     </>
   );
 }

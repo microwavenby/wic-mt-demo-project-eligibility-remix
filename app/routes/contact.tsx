@@ -1,6 +1,6 @@
 import { Trans } from "react-i18next";
 // import { PatternFormat } from "react-number-format";
-import { redirect } from "@remix-run/node";
+import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { PatternFormat } from "react-number-format";
 import { Alert, Button, Fieldset } from "@trussworks/react-uswds";
 import BackLink from "~/components/BackLink";
@@ -8,14 +8,22 @@ import Required from "~/components/Required";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 import TextField from "~/components/TextField";
 
-import { useLocation } from "@remix-run/react";
-import { ValidatedForm, validationError } from "remix-validated-form";
+import { useLoaderData, useLocation } from "@remix-run/react";
+import {
+  setFormDefaults,
+  ValidatedForm,
+  validationError,
+} from "remix-validated-form";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { withZod } from "@remix-validated-form/with-zod";
 import { cookieParser } from "~/utils/formSession";
-import { upsertEligibilityAndEligibilityPage } from "~/utils/db.server";
+import {
+  findEligibilityPageData,
+  upsertEligibilityAndEligibilityPage,
+} from "~/utils/db.server";
 import { routeFromContact } from "~/utils/routing";
+import { ContactData } from "~/types";
 
 const contactSchema = zfd.formData({
   firstName: zfd.text(
@@ -66,11 +74,33 @@ export const action = async ({ request }: { request: Request }) => {
   return redirect(routeTarget);
 };
 
+export const loader: LoaderFunction = async ({
+  request,
+}: {
+  request: Request;
+}) => {
+  const { eligibilityID, headers } = await cookieParser(request);
+  const url = new URL(request.url);
+  const reviewMode = url.searchParams.get("mode") == "review";
+  const existingEligibilityPage = (await findEligibilityPageData(
+    eligibilityID,
+    "contact"
+  )) as ContactData;
+  return json({
+    eligibilityID: eligibilityID,
+    reviewMode: reviewMode,
+    default_phone: existingEligibilityPage["phone"],
+    ...headers,
+    ...setFormDefaults("contactForm", existingEligibilityPage),
+  });
+};
+
+type loaderData = Awaited<ReturnType<typeof loader>>;
+
 export default function Contact() {
   // If the user is reviewing previously entered data, use the review button.
   // Otherwise, use the default button.
-  const location = useLocation();
-  const reviewMode = location.hash.includes("review");
+  const { default_phone, reviewMode } = useLoaderData<loaderData>();
   const actionButtonLabel = reviewMode ? "updateAndReturn" : "continue";
 
   return (
@@ -80,6 +110,7 @@ export default function Contact() {
         validator={contactValidator}
         method="post"
         className="usa-form usa-form--large"
+        id="contactForm"
       >
         <h1>
           <Trans i18nKey="Contact.title" />
@@ -112,6 +143,7 @@ export default function Contact() {
             <Trans i18nKey="Contact.phoneAlert" />
           </Alert>
           <PatternFormat
+            defaultValue={default_phone}
             format="###-###-####"
             valueIsNumericString={true}
             customInput={TextField}

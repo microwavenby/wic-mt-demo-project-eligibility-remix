@@ -45,7 +45,6 @@ const TextField = (props: TextFieldProps): ReactElement => {
   let { t } = useTranslation();
   const { getInputProps, error } = useField(id);
   const TextTypeClass = type == "textarea" ? Textarea : TextInput;
-
   return (
     <>
       <Label htmlFor={id}>
