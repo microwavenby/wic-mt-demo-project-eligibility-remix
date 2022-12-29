@@ -8,6 +8,8 @@ import {
   useIsSubmitting,
   validationError,
   setFormDefaults,
+  useControlField,
+  useFormContext,
 } from "remix-validated-form";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Button } from "@trussworks/react-uswds";
@@ -24,6 +26,7 @@ import {
 import { getBackRoute, routeFromEligibility } from "~/utils/routing";
 import { cookieParser } from "~/utils/formSession";
 import { EligibilityData } from "~/types";
+import { ChangeEvent, useState } from "react";
 
 const eligibilitySchema = zfd.formData({
   residential: zfd.text(),
@@ -102,11 +105,15 @@ export default function Eligibility() {
   const data = useActionData();
 
   // Handle back link.
-  const backRoute = getBackRoute();
+  const location = useLocation();
+  const backRoute = getBackRoute(location.pathname);
+
+  // Handle action button.
 
   // Handle action button.
   // Set up action button and routing
   const actionButtonLabel = reviewMode ? "updateAndReturn" : "continue";
+
   return (
     <>
       <BackLink href={backRoute} />

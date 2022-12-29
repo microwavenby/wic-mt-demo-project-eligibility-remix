@@ -1,11 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { ReactElement } from "react";
+import { ChangeEvent, ReactElement } from "react";
 import {
   Fieldset,
   Checkbox,
   Radio,
   ErrorMessage,
-  Label,
 } from "@trussworks/react-uswds";
 
 import Required from "app/components/Required";
@@ -22,15 +21,16 @@ export type InputChoiceGroupProps = {
   choices: Choice[];
   titleKey: i18nKey;
   required?: boolean;
+  handleChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   type: "checkbox" | "radio";
   error?: string;
   helpElement?: ReactElement;
 };
 
 const InputChoiceGroup = (props: InputChoiceGroupProps): ReactElement => {
-  const { choices, titleKey, required, type, helpElement, name } = props;
+  const { choices, titleKey, required, type, helpElement, name, handleChange } =
+    props;
   const { getInputProps, error } = useField(name);
-
   const InputTypeClass = type == "checkbox" ? Checkbox : Radio;
   let { t } = useTranslation();
   if (!choices?.length) {
@@ -56,6 +56,7 @@ const InputChoiceGroup = (props: InputChoiceGroupProps): ReactElement => {
               label: choice.labelElement,
               type: type,
               value: choice.value,
+              onChange: handleChange,
             })}
           />
         ))}

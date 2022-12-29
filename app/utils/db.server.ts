@@ -6,6 +6,7 @@ import {
   ChooseClinicData,
   ContactData,
   IncomeData,
+  EligibilityForm,
 } from "~/types";
 let db: PrismaClient;
 
@@ -66,6 +67,21 @@ export const findClinics = async (zipcode: string, results: number = 4) => {
     ["distance"]: distance,
     ...clinic,
   }));
+};
+
+export const findEligibility = async (eligibilityID: string) => {
+  const existingEligibility = await db.eligibilityForm.findUnique({
+    where: {
+      eligibility_form_id: eligibilityID,
+    },
+    select: {
+      eligibility_form_id: true,
+      submitted: true,
+      completed: true,
+      updated_at: true,
+    },
+  });
+  return existingEligibility as EligibilityForm;
 };
 
 export const upsertEligibility = async (eligibilityID: string) => {
@@ -130,6 +146,14 @@ export const findEligibilityPageData = async (
   return eligibilityPage?.form_data;
 };
 
+export const removeEligibilityPageData = async (eligibilityID: string) => {
+  await db.eligibilityFormPage.deleteMany({
+    where: {
+      eligibility_form_id: eligibilityID,
+    },
+  });
+};
+
 export const upsertEligibilityPage = async (
   eligibilityID: string,
   page: string,
@@ -159,6 +183,25 @@ export const upsertEligibilityPage = async (
       form_data: formData,
     },
   });
+};
+
+export const updateEligibility = async (
+  eligibilityID: string,
+  completed?: boolean,
+  submitted?: boolean
+) => {
+  const eligibilityForm = await findEligibility(eligibilityID);
+  if (eligibilityForm) {
+    const updatedEligibilityForm = await db.eligibilityForm.update({
+      where: {
+        eligibility_form_id: eligibilityForm.eligibility_form_id,
+      },
+      data: {
+        completed: completed,
+        submitted: submitted,
+      },
+    });
+  }
 };
 
 export const upsertEligibilityAndEligibilityPage = async (

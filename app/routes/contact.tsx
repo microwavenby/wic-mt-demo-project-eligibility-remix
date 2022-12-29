@@ -22,7 +22,7 @@ import {
   findEligibilityPageData,
   upsertEligibilityAndEligibilityPage,
 } from "~/utils/db.server";
-import { routeFromContact } from "~/utils/routing";
+import { getBackRoute, routeFromContact } from "~/utils/routing";
 import { ContactData } from "~/types";
 
 const contactSchema = zfd.formData({
@@ -61,7 +61,7 @@ export const action = async ({ request }: { request: Request }) => {
     console.log(`Validation error: ${validationResult.error}`);
     return validationError(validationResult.error, validationResult.data);
   }
-  const parsedForm = contactSchema.parse(formData);
+  const parsedForm = contactSchema.parse(formData) as ContactData;
   const { eligibilityID } = await cookieParser(request);
   await upsertEligibilityAndEligibilityPage(
     eligibilityID,
@@ -82,16 +82,16 @@ export const loader: LoaderFunction = async ({
   const { eligibilityID, headers } = await cookieParser(request);
   const url = new URL(request.url);
   const reviewMode = url.searchParams.get("mode") == "review";
-  const existingEligibilityPage = (await findEligibilityPageData(
+  const existingContactPage = (await findEligibilityPageData(
     eligibilityID,
     "contact"
   )) as ContactData;
   return json({
     eligibilityID: eligibilityID,
     reviewMode: reviewMode,
-    default_phone: existingEligibilityPage["phone"],
+    default_phone: existingContactPage ? existingContactPage["phone"] : "",
     ...headers,
-    ...setFormDefaults("contactForm", existingEligibilityPage),
+    ...setFormDefaults("contactForm", existingContactPage),
   });
 };
 
@@ -101,11 +101,13 @@ export default function Contact() {
   // If the user is reviewing previously entered data, use the review button.
   // Otherwise, use the default button.
   const { default_phone, reviewMode } = useLoaderData<loaderData>();
+  const location = useLocation();
+  const backRoute = getBackRoute(location.pathname);
   const actionButtonLabel = reviewMode ? "updateAndReturn" : "continue";
 
   return (
     <>
-      <BackLink href="" />
+      <BackLink href={backRoute} />
       <ValidatedForm
         validator={contactValidator}
         method="post"

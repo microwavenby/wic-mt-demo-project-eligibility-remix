@@ -1,18 +1,18 @@
-import { Trans } from "react-i18next";
-import { Alert } from "@trussworks/react-uswds";
+import { Trans, useTranslation } from "react-i18next";
+import { Alert, Button } from "@trussworks/react-uswds";
 import BackLink from "app/components/BackLink";
-import ButtonLink from "app/components/ButtonLink";
-import { getBackRoute, getForwardRoute } from "app/utils/routing";
+import { routeFromHowItWorks, getBackRoute } from "app/utils/routing";
+import { Link, useLocation } from "@remix-run/react";
 
 export default function HowItWorks() {
   const listCopyKeys: string[] = ["apply", "eligible", "appointment"];
-  const sessionKey = "session";
-
   // Handle back link.
-  const backRoute = getBackRoute();
+  const location = useLocation();
+  const backRoute = getBackRoute(location.pathname);
 
   // Handle action button.
-  const forwardRoute = getForwardRoute();
+  const forwardRoute = routeFromHowItWorks();
+  let { t } = useTranslation();
   return (
     <div>
       <BackLink href={backRoute} />
@@ -34,7 +34,11 @@ export default function HowItWorks() {
       <Alert type="warning" headingLevel="h2" noIcon={true}>
         <Trans i18nKey={"HowItWorks.note"} />
       </Alert>
-      <ButtonLink href={forwardRoute} labelKey="HowItWorks.button" />
+      <Link to={forwardRoute}>
+        <Button className="margin-top-6" type="button">
+          {t("HowItWorks.button")}
+        </Button>
+      </Link>
     </div>
   );
 }

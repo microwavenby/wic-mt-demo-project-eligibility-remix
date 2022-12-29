@@ -5,16 +5,24 @@ import { v4 as uuidv4 } from "uuid";
 
 export const eligibilityCookie = createCookie("eligibility-form");
 
-export const cookieParser: Function = async (request: Request) => {
+export const cookieParser: Function = async (
+  request: Request,
+  resetSession: boolean = false
+) => {
   const cookie = await eligibilityCookie.parse(request.headers.get("Cookie"));
   if (cookie) {
     if (cookie.eligibilityID) {
       const eligibilityID = cookie.eligibilityID;
       console.log(`Found ID ${eligibilityID} in cookie`);
-      return { eligibilityID: eligibilityID, headers: {} };
+      if (!resetSession) {
+        return { eligibilityID: eligibilityID, headers: {} };
+      }
     }
   }
   const eligibilityID = uuidv4();
+  if (resetSession) {
+    console.log(`Resetting to new eligibility ID`);
+  }
   console.log(`Generating ${eligibilityID}`);
   return {
     eligibilityID: eligibilityID,

@@ -20,7 +20,7 @@ export type ChooseClinicData = {
   clinic: string;
   clinicAddress: string;
   clinicTelephone: string;
-  zipCode: string;
+  zipCode?: string;
 };
 
 export type ContactData = {
@@ -28,6 +28,13 @@ export type ContactData = {
   lastName: string;
   phone: string;
   comments: string;
+};
+
+export type EligibilityForm = {
+  eligibility_form_id: string;
+  submitted: boolean;
+  completed: boolean;
+  updated_at: Date;
 };
 
 export type EligibilityData = {

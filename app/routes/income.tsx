@@ -1,4 +1,4 @@
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { useActionData, useLoaderData, useLocation } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Trans, useTranslation } from "react-i18next";
 import { ChangeEvent, useState } from "react";
@@ -79,7 +79,8 @@ export default function Income() {
   const incomeData = parseObjectAsIncome(income);
   const data = useActionData();
   // Handle back link.
-  const backRoute = getBackRoute();
+  const location = useLocation();
+  const backRoute = getBackRoute(location.pathname);
   const [selectedSize, setSelectedSize] = useState(
     selected?.householdSize || ""
   );

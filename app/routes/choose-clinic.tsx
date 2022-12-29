@@ -6,7 +6,7 @@ import BackLink from "~/components/BackLink";
 import Required from "~/components/Required";
 import RequiredQuestionStatement from "~/components/RequiredQuestionStatement";
 
-import type { ChooseClinicData, Clinic } from "~/types";
+import type { ChooseClinicData, Clinic, EligibilityData } from "~/types";
 import { isValidZipCode } from "~/utils/dataValidation";
 import {
   Form,
@@ -33,7 +33,7 @@ import { zfd } from "zod-form-data";
 import { withZod } from "@remix-validated-form/with-zod";
 import ClinicInfo from "~/components/ClinicInfo";
 import { z } from "zod";
-import { routeFromClinic } from "~/utils/routing";
+import { getBackRoute, routeFromClinic } from "~/utils/routing";
 
 type ZipError = {
   message: string;
@@ -83,8 +83,13 @@ export async function loader({ request }: { request: Request }) {
     eligibilityID,
     "choose-clinic"
   )) as ChooseClinicData;
+  const existingEligibilityPage = (await findEligibilityPageData(
+    eligibilityID,
+    "eligibility"
+  )) as EligibilityData;
+  const backRoute = getBackRoute(url.pathname, existingEligibilityPage);
   console.log(
-    `QUERY PARMS ${zipcode} IS IT VALID? ${zipcode && isValidZipCode(zipcode)}`
+    `QUERY PARMS ${zipcode} VALID? ${zipcode && isValidZipCode(zipcode)}`
   );
 
   if (!zipcode) {
@@ -92,6 +97,7 @@ export async function loader({ request }: { request: Request }) {
       eligibilityID: eligibilityID,
       headers: headers,
       reviewMode: reviewMode,
+      backRoute: backRoute,
     });
   }
   if (existingClinicPage && zipcode == existingClinicPage.zipCode) {
@@ -99,6 +105,7 @@ export async function loader({ request }: { request: Request }) {
       eligibilityID: eligibilityID,
       headers: headers,
       reviewMode: reviewMode,
+      backRoute: backRoute,
       zipCode: zipcode,
       clinics: [existingClinicPage],
       ...setFormDefaults("clinicForm", existingClinicPage),
@@ -109,6 +116,7 @@ export async function loader({ request }: { request: Request }) {
     return json({
       invalidZip: true,
       eligibilityID: eligibilityID,
+      backRoute: backRoute,
       headers: headers,
       reviewMode: reviewMode,
     });
@@ -119,6 +127,7 @@ export async function loader({ request }: { request: Request }) {
     return json({
       noResults: true,
       eligibilityID: eligibilityID,
+      backRoute: backRoute,
       headers: headers,
       reviewMode: reviewMode,
       zipCode: zipcode,
@@ -129,6 +138,7 @@ export async function loader({ request }: { request: Request }) {
     clinics: clinicsByDistance,
     noResults: zipcode && !clinicsByDistance.length,
     eligibilityID: eligibilityID,
+    backRoute: backRoute,
     headers: headers,
     reviewMode: reviewMode,
     zipCode: zipcode,
@@ -169,7 +179,7 @@ export const action = async ({ request }: { request: Request }) => {
 
 export default function ChooseClinic() {
   // Initialize form as a state using blank values.
-  const { clinics, zipCode, noResults, invalidZip, reviewMode } =
+  const { clinics, zipCode, noResults, invalidZip, reviewMode, backRoute } =
     useLoaderData();
   const data = useActionData();
 
@@ -209,7 +219,7 @@ export default function ChooseClinic() {
   // @TODO: Switch zip code field to use react-number-format. Requires react-number-format to support type=search
   return (
     <>
-      <BackLink href="" />
+      <BackLink href={backRoute} />
       <h1>
         <Trans i18nKey="ChooseClinic.title" />
       </h1>
