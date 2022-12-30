@@ -33,7 +33,6 @@ type loaderData = Awaited<ReturnType<typeof loader>>;
 
 export default function Review() {
   const { t } = useTranslation("common");
-  // Initialize form as a state using blank values.
   const { eligibilityPages } = useLoaderData<loaderData>();
   const location = useLocation();
   const backRoute = getBackRoute(location.pathname);

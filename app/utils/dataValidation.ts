@@ -1,4 +1,5 @@
-import incomeData from "public/data/income.json";
+import { zfd } from "zod-form-data";
+import { z } from "zod";
 
 import type {
   ChooseClinicData,
@@ -8,11 +9,6 @@ import type {
   SessionData,
 } from "app/types";
 
-// Validation function for zip codes.
-export function isValidZipCode(zipCode: string): boolean {
-  return /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipCode);
-}
-
 export const validEligibilityOptions = {
   residential: ["yes", "no"],
   categorical: ["pregnant", "baby", "child", "guardian", "loss", "none"],
@@ -20,61 +16,81 @@ export const validEligibilityOptions = {
   adjunctive: ["insurance", "snap", "tanf", "fdpir", "none"],
 };
 
-export function isValidEligibility(eligibility: EligibilityData): boolean {
-  return (
-    validEligibilityOptions.residential.includes(eligibility.residential) &&
-    eligibility.categorical.length > 0 &&
-    eligibility.categorical.every((item) =>
-      validEligibilityOptions.categorical.includes(item)
-    ) &&
-    validEligibilityOptions.previouslyEnrolled.includes(
-      eligibility.previouslyEnrolled
-    ) &&
-    eligibility.adjunctive.length > 0 &&
-    eligibility.adjunctive.every((item) =>
-      validEligibilityOptions.adjunctive.includes(item)
+// Validation function for zip codes.
+export function isValidZipCode(zipCode: string): boolean {
+  return /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipCode);
+}
+
+export const clinicFormSchema = zfd.formData({
+  clinic: zfd.text(
+    z.string().min(1, {
+      message: "You must select a WIC clinic to continue",
+    })
+  ),
+});
+
+export const contactSchema = zfd.formData({
+  firstName: zfd.text(
+    z
+      .string()
+      .min(1, { message: "You must enter a first name for us to call you" })
+  ),
+  lastName: zfd.text(
+    z
+      .string()
+      .min(1, { message: "You must enter a last name for us to call you" })
+  ),
+  comments: zfd.text(z.string().optional()),
+  phone: zfd.text(
+    z.string().transform((val, ctx) => {
+      const parsed = val.replace(/[^0-9]/g, "");
+      if (parsed.length < 10) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Phone number should be 10 digits",
+        });
+        return z.NEVER;
+      }
+      return parsed;
+    })
+  ),
+});
+
+export const eligibilitySchema = zfd.formData({
+  residential: zfd.text(),
+  categorical: zfd
+    .repeatable(
+      z.array(zfd.text()).min(1, {
+        message: "You must select at least one option",
+      })
     )
-  );
-}
+    .refine(
+      (adj) =>
+        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
+      {
+        message: `Cannot select None and another option`,
+      }
+    ),
+  previouslyEnrolled: zfd.text(),
+  adjunctive: zfd
+    .repeatable(
+      z.array(zfd.text()).min(1, {
+        message: "You must select at least one option",
+      })
+    )
+    .refine(
+      (adj) =>
+        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
+      {
+        message: `Cannot select None and another option`,
+      }
+    ),
+});
 
-export function isValidIncome(income: IncomeData): boolean {
-  return Object.keys(incomeData).includes(income.householdSize);
-}
-
-export function isValidChooseClinic(chooseClinic: ChooseClinicData): boolean {
-  return (
-    chooseClinic.zipCode !== "" &&
-    isValidZipCode(chooseClinic.zipCode) &&
-    chooseClinic.clinic !== undefined
-  );
-}
-
-export function isValidContact(contact: ContactData): boolean {
-  return (
-    contact.firstName !== "" &&
-    contact.lastName !== "" &&
-    contact.phone !== "" &&
-    contact.phone.replace(/[^0-9]/g, "").length === 10
-  );
-}
-
-// This function explicitly disables some eslint checks because it is
-// meant to catch runtime checks that typescript cannot catch.
-function isDefined(
-  dataType:
-    | SessionData
-    | EligibilityData
-    | IncomeData
-    | ContactData
-    | ChooseClinicData,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
-): boolean {
-  for (const attr in dataType) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (data[attr] === undefined) {
-      return false;
-    }
-  }
-  return true;
-}
+export const incomeSchema = zfd.formData({
+  householdSize: zfd.text(
+    z.string().refine((adj) => adj != "", {
+      message: `You must select a household size`,
+    })
+  ),
+});

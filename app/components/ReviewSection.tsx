@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { ReactElement } from "react";
-
 import ClinicInfo from "app/components/ClinicInfo";
 import List from "app/components/List";
 import ReviewCollection from "app/components/ReviewCollection";
@@ -110,16 +109,29 @@ const ReviewSection = (props: ReviewSectionProps): ReactElement => {
       return [];
     }
     const contactResponses: ReviewElementProps[] = [];
-    for (const key in contact) {
-      const castKey = key as keyof typeof contact;
+    // This is not clever, but pulling in requirements to create a sorted
+    // list of keys from the ContactData type also felt pretty cumbersome
+    contactResponses.push(
+      {
+        labelKey: "Contact.firstName",
+        children: contact.firstName,
+      },
+      {
+        labelKey: "Contact.lastName",
+        children: contact.lastName,
+      },
+      {
+        labelKey: "Contact.phone",
+        children: formatPhone(contact.phone),
+      }
+    );
+    if (contact.comments) {
       contactResponses.push({
-        labelKey: `Contact.${key}`,
-        children:
-          castKey === "phone"
-            ? formatPhone(contact[castKey])
-            : contact[castKey],
+        labelKey: "Contact.comments",
+        children: contact.comments,
       });
     }
+
     return contactResponses;
   };
 

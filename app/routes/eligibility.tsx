@@ -1,15 +1,10 @@
 import { Trans } from "react-i18next";
 import { useLocation, useLoaderData, useActionData } from "@remix-run/react";
-import { zfd } from "zod-form-data";
-import { z } from "zod";
 import { withZod } from "@remix-validated-form/with-zod";
 import {
   ValidatedForm,
-  useIsSubmitting,
   validationError,
   setFormDefaults,
-  useControlField,
-  useFormContext,
 } from "remix-validated-form";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { Button } from "@trussworks/react-uswds";
@@ -26,38 +21,7 @@ import {
 import { getBackRoute, routeFromEligibility } from "~/utils/routing";
 import { cookieParser } from "~/utils/formSession";
 import { EligibilityData } from "~/types";
-import { ChangeEvent, useState } from "react";
-
-const eligibilitySchema = zfd.formData({
-  residential: zfd.text(),
-  categorical: zfd
-    .repeatable(
-      z.array(zfd.text()).min(1, {
-        message: "You must select at least one option",
-      })
-    )
-    .refine(
-      (adj) =>
-        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
-      {
-        message: `Cannot select None and another option`,
-      }
-    ),
-  previouslyEnrolled: zfd.text(),
-  adjunctive: zfd
-    .repeatable(
-      z.array(zfd.text()).min(1, {
-        message: "You must select at least one option",
-      })
-    )
-    .refine(
-      (adj) =>
-        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
-      {
-        message: `Cannot select None and another option`,
-      }
-    ),
-});
+import { eligibilitySchema } from "~/utils/dataValidation";
 
 export const eligibilityValidator = withZod(eligibilitySchema);
 

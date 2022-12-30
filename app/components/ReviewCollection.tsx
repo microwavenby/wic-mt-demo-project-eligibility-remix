@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { ReactElement } from "react";
-import { UrlObject } from "url";
 
-import ButtonLink from "app/components/ButtonLink";
 import ReviewElement, {
   ReviewElementProps,
 } from "app/components/ReviewElement";
 
 import { i18nKey } from "app/types";
+import { Button } from "@trussworks/react-uswds";
+import { Link } from "@remix-run/react";
 
 export type ReviewCollectionProps = {
   headerKey: i18nKey;
@@ -34,7 +34,11 @@ const ReviewCollection = (props: ReviewCollectionProps): ReactElement => {
         {t(headerKey)}
         {editable && (
           <div className="float-right">
-            <ButtonLink labelKey="edit" href={editHref} style="unstyled" />
+            <Link to={editHref}>
+              <Button type="button" unstyled>
+                {t("edit")}
+              </Button>
+            </Link>
           </div>
         )}
       </h2>

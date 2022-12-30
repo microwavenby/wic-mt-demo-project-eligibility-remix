@@ -13,24 +13,14 @@ import { Table, Fieldset, Button } from "@trussworks/react-uswds";
 
 import { IncomeData, IncomeDataMap, parseObjectAsIncome } from "app/types";
 import incomeData from "public/data/income.json";
-
+import { incomeSchema } from "~/utils/dataValidation";
 import { getBackRoute, routeFromIncome } from "app/utils/routing";
 import { withZod } from "@remix-validated-form/with-zod";
-import { z } from "zod";
-import { zfd } from "zod-form-data";
 import { cookieParser } from "~/utils/formSession";
 import {
   findEligibilityPageData,
   upsertEligibilityAndEligibilityPage,
 } from "~/utils/db.server";
-
-const incomeSchema = zfd.formData({
-  householdSize: zfd.text(
-    z.string().refine((adj) => adj != "", {
-      message: `You must select a household size`,
-    })
-  ),
-});
 
 export const incomeValidator = withZod(incomeSchema);
 
@@ -144,7 +134,12 @@ export default function Income() {
         </p>
       </div>
 
-      <ValidatedForm validator={incomeValidator} method="post" id="incomeForm">
+      <ValidatedForm
+        validator={incomeValidator}
+        method="post"
+        id="incomeForm"
+        className="usa-form usa-form--large"
+      >
         <Fieldset>
           <h2>
             <Trans i18nKey="Income.householdSizeHeader" />

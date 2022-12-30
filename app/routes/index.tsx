@@ -1,8 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 
-import ButtonLink from "app/components/ButtonLink";
-
-import type { Page } from "app/types";
+import { Button } from "@trussworks/react-uswds";
+import { Link } from "@remix-run/react";
 
 export default function Index() {
   const listCopyKeys: string[] = ["benefits", "supplement", "voluntary"];
@@ -21,7 +20,11 @@ export default function Index() {
         ))}
       </ul>
       <Trans i18nKey="Index.time" />
-      <ButtonLink href="how-it-works" labelKey="Index.button" />
+      <Link to="how-it-works">
+        <Button type="button" className="display-block margin-top-6">
+          {t("Index.button")}
+        </Button>
+      </Link>
     </div>
   );
 }

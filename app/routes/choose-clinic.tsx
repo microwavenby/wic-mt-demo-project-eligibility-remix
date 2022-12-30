@@ -29,10 +29,9 @@ import {
   ValidatedForm,
   validationError,
 } from "remix-validated-form";
-import { zfd } from "zod-form-data";
 import { withZod } from "@remix-validated-form/with-zod";
+import { clinicFormSchema } from "~/utils/dataValidation";
 import ClinicInfo from "~/components/ClinicInfo";
-import { z } from "zod";
 import { getBackRoute, routeFromClinic } from "~/utils/routing";
 
 type ZipError = {
@@ -61,14 +60,6 @@ export function CatchBoundary() {
       );
   }
 }
-
-const clinicFormSchema = zfd.formData({
-  clinic: zfd.text(
-    z.string().min(1, {
-      message: "You must select a WIC clinic to continue",
-    })
-  ),
-});
 
 export const clinicValidator = withZod(clinicFormSchema);
 

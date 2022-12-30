@@ -1,5 +1,4 @@
 import { Trans } from "react-i18next";
-// import { PatternFormat } from "react-number-format";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { PatternFormat } from "react-number-format";
 import { Alert, Button, Fieldset } from "@trussworks/react-uswds";
@@ -14,8 +13,6 @@ import {
   ValidatedForm,
   validationError,
 } from "remix-validated-form";
-import { zfd } from "zod-form-data";
-import { z } from "zod";
 import { withZod } from "@remix-validated-form/with-zod";
 import { cookieParser } from "~/utils/formSession";
 import {
@@ -24,34 +21,7 @@ import {
 } from "~/utils/db.server";
 import { getBackRoute, routeFromContact } from "~/utils/routing";
 import { ContactData } from "~/types";
-
-const contactSchema = zfd.formData({
-  firstName: zfd.text(
-    z
-      .string()
-      .min(1, { message: "You must enter a first name for us to call you" })
-  ),
-  lastName: zfd.text(
-    z
-      .string()
-      .min(1, { message: "You must enter a last name for us to call you" })
-  ),
-  comments: zfd.text(z.string().optional()),
-  phone: zfd.text(
-    z.string().transform((val, ctx) => {
-      const parsed = val.replace(/[^0-9]/g, "");
-      if (parsed.length < 10) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Phone number should be 10 digits",
-        });
-        return z.NEVER;
-      }
-      return parsed;
-    })
-  ),
-});
-
+import { contactSchema } from "~/utils/dataValidation";
 export const contactValidator = withZod(contactSchema);
 
 export const action = async ({ request }: { request: Request }) => {

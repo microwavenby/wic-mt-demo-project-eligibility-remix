@@ -33,6 +33,7 @@ export const action = async ({ request }: { request: Request }) => {
 type loaderData = Awaited<ReturnType<typeof loader>>;
 
 export default function OtherBenefits() {
+  useLoaderData<loaderData>();
   return (
     <>
       <h1>
