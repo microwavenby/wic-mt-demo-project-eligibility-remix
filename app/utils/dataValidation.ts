@@ -44,7 +44,7 @@ export const contactSchema = zfd.formData({
   phone: zfd.text(
     z.string().transform((val, ctx) => {
       const parsed = val.replace(/[^0-9]/g, "");
-      if (parsed.length < 10) {
+      if (parsed.length != 10) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Phone number should be 10 digits",
@@ -57,34 +57,76 @@ export const contactSchema = zfd.formData({
 });
 
 export const eligibilitySchema = zfd.formData({
-  residential: zfd.text(),
+  residential: zfd
+    .text()
+    .refine((val) => validEligibilityOptions.residential.includes(val), {
+      message: `Residential must be one of [${validEligibilityOptions.residential.join(
+        ", "
+      )}]`,
+    }),
   categorical: zfd
     .repeatable(
       z.array(zfd.text()).min(1, {
         message: "You must select at least one option",
       })
     )
-    .refine(
-      (adj) =>
-        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
-      {
-        message: `Cannot select None and another option`,
+    .superRefine((val, ctx) => {
+      console.log(`VAL VAL VAL ${val.join("HAMHAM")}`);
+      if (
+        val.every((item) =>
+          validEligibilityOptions.categorical.includes(item)
+        ) === false
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `categorical must be one of [${validEligibilityOptions.categorical.join(
+            ", "
+          )}]`,
+        });
+        return z.NEVER;
       }
-    ),
-  previouslyEnrolled: zfd.text(),
-  adjunctive: zfd
-    .repeatable(
-      z.array(zfd.text()).min(1, {
-        message: "You must select at least one option",
-      })
-    )
-    .refine(
-      (adj) =>
-        (adj.includes("none") && adj.length == 1) || !adj.includes("none"),
-      {
-        message: `Cannot select None and another option`,
+      if (val.includes("none") && val.length != 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Cannot select None and another option`,
+        });
       }
-    ),
+    }),
+  previouslyEnrolled: zfd
+    .text()
+    .refine((val) => validEligibilityOptions.previouslyEnrolled.includes(val), {
+      message: `previouslyEnrolled must be one of [${validEligibilityOptions.previouslyEnrolled.join(
+        ", "
+      )}]`,
+    }),
+  adjunctive: zfd.repeatable(
+    z.array(zfd.text()).superRefine((val, ctx) => {
+      if (val.length == 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "You must select at least one option",
+        });
+      }
+      if (
+        val.every((selection) =>
+          validEligibilityOptions.adjunctive.includes(selection)
+        ) === false
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Adjunctive must be one of [${validEligibilityOptions.adjunctive.join(
+            ", "
+          )}]`,
+        });
+      }
+      if (val.includes("none") && val.length != 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Cannot select None and another option`,
+        });
+      }
+    })
+  ),
 });
 
 export const incomeSchema = zfd.formData({
