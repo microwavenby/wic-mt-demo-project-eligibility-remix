@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should match snapshot 1`] = `
+<div>
+  <div
+    class="usa-accordion usa-accordion--bordered"
+    data-testid="accordion"
+  >
+    <h3
+      class="usa-accordion__heading"
+    >
+      <button
+        aria-controls="test-accordion"
+        aria-expanded="false"
+        class="usa-accordion__button"
+        data-testid="accordionButton_test-accordion"
+        type="button"
+      >
+        header
+      </button>
+    </h3>
+    <div
+      class="usa-accordion__content usa-prose"
+      data-testid="accordionItem_test-accordion"
+      hidden=""
+      id="test-accordion"
+    >
+      body
+    </div>
+  </div>
+</div>
+`;

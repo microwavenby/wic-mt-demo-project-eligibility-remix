@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should match snapshot when it is a set of checkboxes 1`] = `
+<div>
+  <fieldset
+    class="usa-fieldset"
+    data-testid="fieldset"
+  >
+    <legend
+      class="usa-sr-only"
+    >
+      title
+    </legend>
+    <h2>
+      title
+    </h2>
+    <div
+      class="usa-checkbox"
+      data-testid="checkbox"
+    >
+      <input
+        class="usa-checkbox__input usa-checkbox__input--tile"
+        id="test-choices-a"
+        type="checkbox"
+        value="a"
+      />
+      <label
+        class="usa-checkbox__label"
+        for="test-choices-a"
+      >
+        <div>
+          label 
+          a
+        </div>
+      </label>
+    </div>
+    <div
+      class="usa-checkbox"
+      data-testid="checkbox"
+    >
+      <input
+        class="usa-checkbox__input usa-checkbox__input--tile"
+        id="test-choices-b"
+        type="checkbox"
+        value="b"
+      />
+      <label
+        class="usa-checkbox__label"
+        for="test-choices-b"
+      >
+        <div>
+          label 
+          b
+        </div>
+      </label>
+    </div>
+    <div
+      class="usa-checkbox"
+      data-testid="checkbox"
+    >
+      <input
+        class="usa-checkbox__input usa-checkbox__input--tile"
+        id="test-choices-c"
+        type="checkbox"
+        value="c"
+      />
+      <label
+        class="usa-checkbox__label"
+        for="test-choices-c"
+      >
+        <div>
+          label 
+          c
+        </div>
+      </label>
+    </div>
+  </fieldset>
+</div>
+`;
+
+exports[`should match snapshot when it is a set of radio buttons 1`] = `
+<div>
+  <fieldset
+    class="usa-fieldset"
+    data-testid="fieldset"
+  >
+    <legend
+      class="usa-sr-only"
+    >
+      title
+    </legend>
+    <h2>
+      title
+    </h2>
+    <div
+      class="usa-radio"
+      data-testid="radio"
+    >
+      <input
+        class="usa-radio__input usa-radio__input--tile"
+        id="test-choices-a"
+        type="radio"
+        value="a"
+      />
+      <label
+        class="usa-radio__label"
+        for="test-choices-a"
+      >
+        <div>
+          label 
+          a
+        </div>
+      </label>
+    </div>
+    <div
+      class="usa-radio"
+      data-testid="radio"
+    >
+      <input
+        class="usa-radio__input usa-radio__input--tile"
+        id="test-choices-b"
+        type="radio"
+        value="b"
+      />
+      <label
+        class="usa-radio__label"
+        for="test-choices-b"
+      >
+        <div>
+          label 
+          b
+        </div>
+      </label>
+    </div>
+    <div
+      class="usa-radio"
+      data-testid="radio"
+    >
+      <input
+        class="usa-radio__input usa-radio__input--tile"
+        id="test-choices-c"
+        type="radio"
+        value="c"
+      />
+      <label
+        class="usa-radio__label"
+        for="test-choices-c"
+      >
+        <div>
+          label 
+          c
+        </div>
+      </label>
+    </div>
+  </fieldset>
+</div>
+`;

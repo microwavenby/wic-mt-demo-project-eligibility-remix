@@ -55,7 +55,7 @@ const Layout = ({ children, demoMode }: Props): ReactElement => {
                 />
                 <Image
                   src="/img/montana-logo.svg"
-                  alt="Monthana DPHHS logo"
+                  alt="Montana DPHHS logo"
                   width={46.22}
                   height={32}
                 />

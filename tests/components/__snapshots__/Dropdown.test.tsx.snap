@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should match snapshot 1`] = `
+<div>
+  <label
+    class="usa-label"
+    data-testid="label"
+    for="test-id"
+  >
+    dropdown label
+  </label>
+  <select
+    class="usa-select"
+    data-testid="dropdown"
+    id="test-id"
+    name="test-id"
+  >
+    <option
+      id="test-id"
+      label=""
+      value=""
+    >
+      - 
+      Select
+       -
+    </option>
+    <option
+      id="test-id"
+      label="a"
+      value="a"
+    >
+      a
+    </option>
+    <option
+      id="test-id"
+      label="b"
+      value="b"
+    >
+      b
+    </option>
+    <option
+      id="test-id"
+      label="c"
+      value="c"
+    >
+      c
+    </option>
+  </select>
+</div>
+`;

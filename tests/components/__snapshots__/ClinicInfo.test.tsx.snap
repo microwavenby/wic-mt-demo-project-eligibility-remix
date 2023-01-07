@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should match snapshot when it is a form element 1`] = `
+<div>
+  <div
+    class="clinic-info"
+  >
+    <div
+      class="clinic-name"
+    >
+      clinic name
+    </div>
+    <div
+      class="usa-checkbox__label-description"
+    >
+      <div
+        class="clinic-street-address"
+      >
+        clinic address
+      </div>
+      <div
+        class="clinic-phone"
+      >
+        clinic phone
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`should match snapshot when it is not a form element 1`] = `
+<div>
+  <div
+    class="clinic-info"
+  >
+    <div
+      class="clinic-name"
+    >
+      clinic name
+    </div>
+    <div
+      class=""
+    >
+      <div
+        class="clinic-street-address"
+      >
+        clinic address
+      </div>
+      <div
+        class="clinic-phone"
+      >
+        clinic phone
+      </div>
+    </div>
+  </div>
+</div>
+`;

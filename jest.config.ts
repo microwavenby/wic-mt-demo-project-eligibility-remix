@@ -5,6 +5,7 @@ const jestConfig: JestConfigWithTsJest = {
   moduleNameMapper: {
     "^app/(.*)$": "<rootDir>/app/$1",
     "^tests/(.*)$": "<rootDir>/tests/$1",
+    "^public/(.*)$": "<rootDir>/public/$1",
   },
   preset: "ts-jest",
   testEnvironment: "jsdom",
