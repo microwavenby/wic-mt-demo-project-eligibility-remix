@@ -12,10 +12,9 @@ it("should render a string with one internal link and no styles", () => {
       i18nLinkKey="test:transLine.plainStringOneLink.links"
     />
   );
-  expect(screen.getByRole("link", { name: "second" })).toHaveAttribute(
-    "href",
-    alpha
-  );
+  expect(
+    screen.getByRole("link", { name: "second" }).getAttribute("href")
+  ).toBe(alpha);
 });
 
 it("should render a string with multiple links and no styles", () => {
@@ -25,12 +24,10 @@ it("should render a string with multiple links and no styles", () => {
       i18nLinkKey="test:transLine.plainStringLinks.links"
     />
   );
-  expect(screen.getByRole("link", { name: "second" })).toHaveAttribute(
-    "href",
-    alpha
-  );
-  expect(screen.getByRole("link", { name: "third" })).toHaveAttribute(
-    "href",
+  expect(
+    screen.getByRole("link", { name: "second" }).getAttribute("href")
+  ).toBe(alpha);
+  expect(screen.getByRole("link", { name: "third" }).getAttribute("href")).toBe(
     beta
   );
 });
@@ -42,20 +39,16 @@ it("should render a string with multiple internal links reused links and out of 
       i18nLinkKey="test:transLine.plainStringLinksComplicated.links"
     />
   );
-  expect(screen.getByRole("link", { name: "second" })).toHaveAttribute(
-    "href",
-    alpha
-  );
-  expect(screen.getByRole("link", { name: "fourth" })).toHaveAttribute(
-    "href",
-    alpha
-  );
-  expect(screen.getByRole("link", { name: "first" })).toHaveAttribute(
-    "href",
+  expect(
+    screen.getByRole("link", { name: "second" }).getAttribute("href")
+  ).toBe(alpha);
+  expect(
+    screen.getByRole("link", { name: "fourth" }).getAttribute("href")
+  ).toBe(alpha);
+  expect(screen.getByRole("link", { name: "first" }).getAttribute("href")).toBe(
     beta
   );
-  expect(screen.getByRole("link", { name: "fifth" })).toHaveAttribute(
-    "href",
+  expect(screen.getByRole("link", { name: "fifth" }).getAttribute("href")).toBe(
     beta
   );
 });
@@ -74,8 +67,7 @@ it("should render a string with one internal link and styles", () => {
       : element.tagName.toLowerCase() === "strong" &&
           content.startsWith("second");
   });
-  expect(screen.getByRole("link", { name: "third" })).toHaveAttribute(
-    "href",
+  expect(screen.getByRole("link", { name: "third" }).getAttribute("href")).toBe(
     alpha
   );
 });
@@ -93,8 +85,7 @@ it("should render a string with a styled internal link", () => {
       ? false
       : element.tagName.toLowerCase() === "strong";
   });
-  expect(screen.getByRole("link", { name: "second" })).toHaveAttribute(
-    "href",
-    alpha
-  );
+  expect(
+    screen.getByRole("link", { name: "second" }).getAttribute("href")
+  ).toBe(alpha);
 });

@@ -71,7 +71,6 @@ export const eligibilitySchema = zfd.formData({
       })
     )
     .superRefine((val, ctx) => {
-      console.log(`VAL VAL VAL ${val.join("HAMHAM")}`);
       if (
         val.every((item) =>
           validEligibilityOptions.categorical.includes(item)

@@ -34,13 +34,15 @@ export function routeFromEligibility(
   ) {
     return "/other-benefits";
   }
+  if (eligibilityForm.adjunctive.includes("none")) {
+    if (reviewMode) {
+      return "/income?mode=review";
+    }
+    return "/income";
+  }
   if (reviewMode) {
     return "/review";
   }
-  if (eligibilityForm.adjunctive.includes("none")) {
-    return "/income";
-  }
-
   return "/choose-clinic";
 }
 
