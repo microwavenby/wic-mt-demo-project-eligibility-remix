@@ -1,5 +1,3 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { Location } from "@remix-run/react";
 import {
   EligibilityPagesType,
   EligibilityData,
@@ -8,27 +6,15 @@ import {
   IncomeData,
   EligibilityForm,
 } from "~/types";
-let db: PrismaClient;
+import { Prisma } from "@prisma/client";
 
-declare global {
-  var __db: PrismaClient | undefined;
-}
-
-// this is needed because in development we don't want to restart
-// the server with every change, but we want to make sure we don't
-// create a new connection to the DB with every change either.
-if (process.env.NODE_ENV === "production") {
-  db = new PrismaClient();
-} else {
-  if (!global.__db) {
-    global.__db = new PrismaClient();
-  }
-  db = global.__db;
-}
-
-export { db };
+import db from "app/utils/db.connection";
 
 type pathType = "eligibility" | "income" | "choose-clinic" | "contact";
+
+export type ZipClinicDistanceWithClinic = Prisma.ZipClinicDistanceGetPayload<{
+  include: { clinic: true };
+}>;
 
 export const findClinicByName = async (name: string) => {
   return await db.clinic.findFirst({
