@@ -15,12 +15,18 @@ import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 import Layout from "app/components/Layout";
+import { camelCase, upperFirst } from "lodash";
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "New Remix App",
-  viewport: "width=device-width,initial-scale=1",
-});
+export const meta: MetaFunction = ({ location }) => {
+  let { t } = useTranslation();
+  const route = location.pathname != "/" ? location.pathname : "index";
+  const titleKey = `${upperFirst(camelCase(route))}.title`;
+  return {
+    charset: "utf-8",
+    title: t(titleKey) as string,
+    viewport: "width=device-width,initial-scale=1",
+  };
+};
 
 export function links() {
   return [

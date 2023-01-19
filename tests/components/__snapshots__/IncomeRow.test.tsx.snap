@@ -2,44 +2,52 @@
 
 exports[`should match snapshot when householdSize is an empty string 1`] = `
 <div>
-  <tr>
-    <td
-      data-label="Weekly"
-    >
-      $XX,XXX
-    </td>
-    <td
-      data-label="Monthly"
-    >
-      $XX,XXX
-    </td>
-    <td
-      data-label="Annual"
-    >
-      $XX,XXX
-    </td>
-  </tr>
+  <table>
+    <tbody>
+      <tr>
+        <td
+          data-label="Weekly"
+        >
+          $XX,XXX
+        </td>
+        <td
+          data-label="Monthly"
+        >
+          $XX,XXX
+        </td>
+        <td
+          data-label="Annual"
+        >
+          $XX,XXX
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 `;
 
 exports[`should match snapshot when householdSize is not empty string 1`] = `
 <div>
-  <tr>
-    <td
-      data-label="Weekly"
-    >
-      $100
-    </td>
-    <td
-      data-label="Monthly"
-    >
-      $200
-    </td>
-    <td
-      data-label="Annual"
-    >
-      $300
-    </td>
-  </tr>
+  <table>
+    <tbody>
+      <tr>
+        <td
+          data-label="Weekly"
+        >
+          $100
+        </td>
+        <td
+          data-label="Monthly"
+        >
+          $200
+        </td>
+        <td
+          data-label="Annual"
+        >
+          $300
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 `;

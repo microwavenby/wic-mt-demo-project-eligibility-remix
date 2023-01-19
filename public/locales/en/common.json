@@ -49,7 +49,8 @@
     "residential": "Do you live or work in Montana?",
     "snap": "SNAP (Supplemental Nutrition Assistance Program)",
     "tanf": "TANF (Temporary Assistance for Needy Families)",
-    "yes": "Yes"
+    "yes": "Yes",
+    "title": "Check your eligibility"
   },
   "HowItWorks": {
     "apply": "You can start applying for WIC by checking to see if you're eligible.",

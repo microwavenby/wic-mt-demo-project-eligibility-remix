@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  metadata-api-local:
+    build:
+      target: localapi
+      context: .
+    env_file: .env
+    ports:
+    - "8000:8000"
+    volumes:
+    - "./metadata_api:/usr/local/src/metadata_api"
+    environment:
+      DB_PASSWORD: incredible_local_secret_phrase
+      DB_HOST: database-local
+      DB_USER: postgres
+    depends_on:
+      database-local:
+        condition: service_healthy
+    command: >
+      bash -c "pipenv run migrate && pipenv run localapi"
+  database-local:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: incredible_local_secret_phrase
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: "pg_isready --username=postgres"
+      timeout: 10s
+      retries: 20
+

@@ -9,7 +9,8 @@ export const cookieParser: Function = async (
   request: Request,
   resetSession: boolean = false
 ) => {
-  const cookie = await eligibilityCookie.parse(request.headers.get("Cookie"));
+  const cookie =
+    (await eligibilityCookie.parse(request.headers.get("Cookie"))) || {};
   if (cookie) {
     if (cookie.eligibilityID) {
       const eligibilityID = cookie.eligibilityID;
@@ -24,12 +25,11 @@ export const cookieParser: Function = async (
     console.log(`Resetting to new eligibility ID`);
   }
   console.log(`Generating ${eligibilityID}`);
+  cookie.eligibilityID = eligibilityID;
   return {
     eligibilityID: eligibilityID,
     headers: {
-      "Set-cookie": await eligibilityCookie.serialize({
-        eligibilityID: eligibilityID,
-      }),
+      "Set-cookie": await eligibilityCookie.serialize(cookie),
     },
   };
 };

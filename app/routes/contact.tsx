@@ -56,13 +56,15 @@ export const loader: LoaderFunction = async ({
     eligibilityID,
     "contact"
   )) as ContactData;
-  return json({
-    eligibilityID: eligibilityID,
-    reviewMode: reviewMode,
-    default_phone: existingContactPage ? existingContactPage["phone"] : "",
-    ...headers,
-    ...setFormDefaults("contactForm", existingContactPage),
-  });
+  return json(
+    {
+      eligibilityID: eligibilityID,
+      reviewMode: reviewMode,
+      default_phone: existingContactPage ? existingContactPage["phone"] : "",
+      ...setFormDefaults("contactForm", existingContactPage),
+    },
+    { headers: headers }
+  );
 };
 
 type loaderData = Awaited<ReturnType<typeof loader>>;

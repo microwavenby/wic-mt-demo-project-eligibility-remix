@@ -12,13 +12,23 @@ const testProps = {
 };
 
 it("should match snapshot when householdSize is not empty string", () => {
-  const { container } = renderWithRouter(<IncomeRow {...testProps} />);
+  const { container } = renderWithRouter(
+    <table>
+      <tbody>
+        <IncomeRow {...testProps} />
+      </tbody>
+    </table>
+  );
   expect(container).toMatchSnapshot();
 });
 
 it("should match snapshot when householdSize is an empty string", () => {
   const { container } = renderWithRouter(
-    <IncomeRow {...testProps} householdSize="" />
+    <table>
+      <tbody>
+        <IncomeRow {...testProps} householdSize="" />
+      </tbody>
+    </table>
   );
   expect(container).toMatchSnapshot();
 });

@@ -1,5 +1,6 @@
 import { Trans } from "react-i18next";
 import { Button } from "@trussworks/react-uswds";
+import TransLinks from "~/components/TransLinks";
 import { Form, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { findEligibility, removeEligibilityPageData } from "~/utils/db.server";
@@ -10,8 +11,8 @@ export const loader: LoaderFunction = async ({
 }: {
   request: Request;
 }) => {
-  const response = await cookieParser(request);
-  return json(response);
+  const { eligibilityID, headers } = await cookieParser(request);
+  return json({ eligibilityID: eligibilityID }, { headers: headers });
 };
 
 export const action = async ({ request }: { request: Request }) => {
@@ -43,31 +44,15 @@ export default function OtherBenefits() {
         <Trans i18nKey="OtherBenefits.subHeader" />
       </h2>
       <p>
-        <Trans
-          components={[
-            <a
-              key="0"
-              href="https://dphhs.mt.gov/Assistance"
-              className="usa-link usa-link--external"
-              target="_blank"
-              rel="noopener noreferrer"
-            />,
-          ]}
-          i18nKey={"OtherBenefits.assistance"}
+        <TransLinks
+          i18nLinkKey="OtherBenefits.assistance.links"
+          i18nTextKey="OtherBenefits.assistance.text"
         />
       </p>
       <p>
-        <Trans
-          components={[
-            <a
-              key="0"
-              href="https://www.signupwic.com/"
-              className="usa-link usa-link--external"
-              target="_blank"
-              rel="noopener noreferrer"
-            />,
-          ]}
-          i18nKey={"OtherBenefits.location"}
+        <TransLinks
+          i18nLinkKey="OtherBenefits.location.links"
+          i18nTextKey="OtherBenefits.location.text"
         />
       </p>
       <Form method="post">

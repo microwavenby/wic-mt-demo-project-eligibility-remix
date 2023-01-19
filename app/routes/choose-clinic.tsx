@@ -84,56 +84,66 @@ export async function loader({ request }: { request: Request }) {
   );
 
   if (!zipcode) {
-    return json({
-      eligibilityID: eligibilityID,
-      headers: headers,
-      reviewMode: reviewMode,
-      backRoute: backRoute,
-    });
+    return json(
+      {
+        eligibilityID: eligibilityID,
+        reviewMode: reviewMode,
+        backRoute: backRoute,
+      },
+      { headers: headers }
+    );
   }
   if (existingClinicPage && zipcode == existingClinicPage.zipCode) {
-    return json({
-      eligibilityID: eligibilityID,
-      headers: headers,
-      reviewMode: reviewMode,
-      backRoute: backRoute,
-      zipCode: zipcode,
-      clinics: [existingClinicPage],
-      ...setFormDefaults("clinicForm", existingClinicPage),
-    });
+    return json(
+      {
+        eligibilityID: eligibilityID,
+        reviewMode: reviewMode,
+        backRoute: backRoute,
+        zipCode: zipcode,
+        clinics: [existingClinicPage],
+        ...setFormDefaults("clinicForm", existingClinicPage),
+      },
+      { headers: headers }
+    );
   }
   if (!isValidZipCode(zipcode)) {
     console.log(`ERROR: Bad zipcode ${zipcode}`);
-    return json({
-      invalidZip: true,
-      eligibilityID: eligibilityID,
-      backRoute: backRoute,
-      headers: headers,
-      reviewMode: reviewMode,
-    });
+    return json(
+      {
+        invalidZip: true,
+        eligibilityID: eligibilityID,
+        backRoute: backRoute,
+        reviewMode: reviewMode,
+      },
+      { headers: headers }
+    );
   }
   const clinicsByDistance = await findClinics(zipcode, 8);
   if (!clinicsByDistance.length) {
     console.log(`ERROR: No results for ${zipcode}`);
-    return json({
-      noResults: true,
-      eligibilityID: eligibilityID,
-      backRoute: backRoute,
-      headers: headers,
-      reviewMode: reviewMode,
-      zipCode: zipcode,
-    });
+    return json(
+      {
+        noResults: true,
+        eligibilityID: eligibilityID,
+        backRoute: backRoute,
+        reviewMode: reviewMode,
+        zipCode: zipcode,
+      },
+      { headers: headers }
+    );
   }
   console.log(`Found ${clinicsByDistance.length} clinics for zip ${zipcode}`);
-  return json({
-    clinics: clinicsByDistance,
-    noResults: zipcode && !clinicsByDistance.length,
-    eligibilityID: eligibilityID,
-    backRoute: backRoute,
-    headers: headers,
-    reviewMode: reviewMode,
-    zipCode: zipcode,
-  });
+  return json(
+    {
+      clinics: clinicsByDistance,
+      noResults: zipcode && !clinicsByDistance.length,
+      eligibilityID: eligibilityID,
+      backRoute: backRoute,
+      reviewMode: reviewMode,
+      zipCode: zipcode,
+    },
+    { headers: headers }
+  );
 }
 
 export const action = async ({ request }: { request: Request }) => {

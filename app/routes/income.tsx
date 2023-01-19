@@ -33,13 +33,15 @@ export const loader: LoaderFunction = async ({ request }) => {
     "income"
   )) as IncomeData;
   console.log(`FOUND INCOME ${JSON.stringify(existingIncomePage)}`);
-  return json({
-    eligibilityID: eligibilityID,
-    reviewMode: reviewMode,
-    income: incomeData as IncomeDataMap,
-    selected: existingIncomePage,
-    ...headers,
-  });
+  return json(
+    {
+      eligibilityID: eligibilityID,
+      reviewMode: reviewMode,
+      income: incomeData as IncomeDataMap,
+      selected: existingIncomePage,
+    },
+    { headers: headers }
+  );
 };
 
 type loaderData = Awaited<ReturnType<typeof loader>>;

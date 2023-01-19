@@ -33,12 +33,14 @@ export const loader: LoaderFunction = async ({ request }) => {
     eligibilityID,
     "eligibility"
   )) as EligibilityData;
-  return json({
-    eligibilityID: eligibilityID,
-    reviewMode: reviewMode,
-    ...headers,
-    ...setFormDefaults("eligiblityForm", existingEligibilityPage),
-  });
+  return json(
+    {
+      eligibilityID: eligibilityID,
+      reviewMode: reviewMode,
+      ...setFormDefaults("eligiblityForm", existingEligibilityPage),
+    },
+    { headers: headers }
+  );
 };
 
 export const action = async ({ request }: { request: Request }) => {

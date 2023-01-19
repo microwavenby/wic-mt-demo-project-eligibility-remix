@@ -10,6 +10,7 @@ const jestConfig: JestConfigWithTsJest = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/tests/helpers/prismaMock.ts"],
+  testMatch: ["**/tests/**/*.test.(ts|tsx|js)"],
 };
 
 export default jestConfig;

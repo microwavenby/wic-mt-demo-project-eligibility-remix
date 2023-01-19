@@ -21,12 +21,14 @@ export const loader: LoaderFunction = async ({ request }) => {
   const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE ?? "false";
   console.log(`Looking for ${eligibilityID}`);
   const eligibilityPages = await findEligibilityPages(eligibilityID);
-  return json({
-    eligibilityID: eligibilityID,
-    headers: headers,
-    demoMode: demoMode,
-    eligibilityPages: eligibilityPages,
-  });
+  return json(
+    {
+      eligibilityID: eligibilityID,
+      demoMode: demoMode,
+      eligibilityPages: eligibilityPages,
+    },
+    { headers: headers }
+  );
 };
 type loaderData = Awaited<ReturnType<typeof loader>>;
 

@@ -47,3 +47,4 @@ export function getMockSession() {
     clinic: getMockChooseClinicData(),
   } as SessionData;
 }
+

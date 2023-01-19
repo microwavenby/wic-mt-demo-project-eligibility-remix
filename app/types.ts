@@ -63,6 +63,15 @@ export interface IncomeDataMap {
   [householdSize: string]: IncomeDataObject;
 }
 
+export type ZipDistanceValue = {
+  id: number;
+  distance: string;
+};
+
+export type ZipDistance = {
+  [zipCode: string]: ZipDistanceValue[];
+};
+
 export function parseObjectAsIncome(raw: any) {
   let parsed = <IncomeDataMap>{};
   for (const [householdSize, incomeLevels] of Object.entries(raw)) {
@@ -78,34 +87,6 @@ export type SessionData = {
   income: IncomeData;
   submitted?: boolean;
 };
-
-export interface ReadSession {
-  session: SessionData;
-}
-
-export interface WriteSession extends ReadSession {
-  setSession: Dispatch<SetStateAction<SessionData>> | (() => unknown);
-}
-
-export interface ClearSession extends WriteSession {
-  sessionKey: string;
-}
-
-/**
- * Types relating to page routing.
- */
-export interface Page {
-  backRoute?: string;
-  forwardRoute?: UrlObject | string;
-  reviewMode?: boolean;
-}
-
-/**
- * Types of pages.
- */
-export type ReadOnlyPage = ReadSession & Page;
-export type EditablePage = WriteSession & Page;
-export type ClearablePage = ClearSession & Page;
 
 /**
  * i18n types.

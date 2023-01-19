@@ -23,11 +23,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { eligibilityID, headers } = await cookieParser(request);
   console.log(`Looking for ${eligibilityID}`);
   const eligibilityPages = await findEligibilityPages(eligibilityID);
-  return json({
-    eligibilityID: eligibilityID,
-    headers: headers,
-    eligibilityPages: eligibilityPages,
-  });
+  return json(
+    {
+      eligibilityID: eligibilityID,
+      eligibilityPages: eligibilityPages,
+    },
+    { headers: headers }
+  );
 };
 type loaderData = Awaited<ReturnType<typeof loader>>;
 
