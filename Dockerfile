@@ -35,6 +35,7 @@ RUN npx prisma generate
 COPY . .
 RUN npm run build
 RUN npm run build:css
+RUN npm run post:css
 
 # Finally, build the production image with minimal footprint
 FROM base as prod
@@ -55,6 +56,6 @@ CMD ["npm", "start"]
 # Provide a test container
 FROM build as test
 ENV NODE_ENV test
-
+COPY --from=build /myapp/jest.config.ts /myapp/jest.config.ts
 WORKDIR /myapp
 CMD ["npm", "test"]

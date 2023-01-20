@@ -6,14 +6,18 @@
     "deploy": "fly deploy --remote-only",
     "dev": "remix dev",
     "start": "remix-serve build",
-    "build:css": "sass -I ./node_modules/@uswds -I ./node_modules/@uswds/uswds/packages styles:app/styles --style compressed",
-    "dev:css": "npm run build:css && sass -I ./node_modules/@uswds -I ./node_modules/@uswds/uswds/packages --watch styles:app/styles",
+    "build:css": "sass -I ./styles -I ./node_modules/@uswds -I ./node_modules/@uswds/uswds/packages styles:app/styles/unprefixed --style compressed",
+    "post:css": "postcss ./app/styles/unprefixed/styles.css --use autoprefixer -d ./app/styles",
+    "dev:css": "npm run build:css && sass -I ./styles -I ./node_modules/@uswds -I ./node_modules/@uswds/uswds/packages --watch styles:app/styles",
     "test": "jest",
     "e2e": "npx playwright test"
   },
   "prisma": {
     "seed": "ts-node  --require tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
+  "browserslist": [
+    "defaults"
+  ],
   "dependencies": {
     "@prisma/client": "^4.7.1",
     "@remix-run/node": "^1.7.6",
@@ -56,11 +60,14 @@
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "@types/uuid": "^9.0.0",
+    "autoprefixer": "^10.4.13",
     "eslint": "^8.27.0",
     "jest": "^29.3.1",
     "jest-axe": "^7.0.0",
     "jest-environment-jsdom": "^29.3.1",
     "jest-mock-extended": "^3.0.1",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^10.1.0",
     "prisma": "^4.7.1",
     "sass": "^1.56.1",
     "ts-jest": "^29.0.3",

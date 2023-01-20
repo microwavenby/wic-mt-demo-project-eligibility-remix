@@ -99,11 +99,16 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run dev",
+    command:
+      "docker compose -f docker-compose.e2e.yml up database-e2e --wait && \
+       docker compose -f docker-compose.e2e.yml run wic-remix-migrate && \
+       npm run dev",
     port: 5555,
-    timeout: 120 * 1000,
+    timeout: 240 * 1000,
     reuseExistingServer: !process.env.CI,
     env: {
+      DATABASE_URL:
+        "postgresql://postgres:incredible_local_secret_phrase@localhost:5554/postgres?schema=public",
       PORT: "5555",
     },
   },
