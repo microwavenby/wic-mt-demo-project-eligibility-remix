@@ -29,6 +29,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const reviewMode = url.searchParams.get("mode") == "review";
   const { eligibilityID, headers } = await cookieParser(request);
+  console.log(`Got eligibilityID ${eligibilityID} in LOADER`);
   const existingEligibilityPage = (await findEligibilityPageData(
     eligibilityID,
     "eligibility"
@@ -92,6 +93,7 @@ export default function Eligibility() {
         className="usa-form usa-form--large"
         method="post"
         id="eligiblityForm"
+        action="/eligibility"
       >
         <InputChoiceGroup
           required
