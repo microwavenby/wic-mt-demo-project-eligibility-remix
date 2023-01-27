@@ -13,7 +13,7 @@ const Layout = ({ children, demoMode }: Props): ReactElement => {
   return (
     <div className="container">
       {demoMode === "true" ? (
-        <Alert type="warning" headingLevel="h6" slim={true}>
+        <Alert type="warning" headingLevel="h6" slim={true} role="status">
           <TransLinks
             i18nTextKey={"demoAlertBanner.text"}
             i18nLinkKey={"demoAlertBanner.links"}

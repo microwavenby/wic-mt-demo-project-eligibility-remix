@@ -46,7 +46,8 @@
     "zod-form-data": "^1.2.4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.29.2",
+    "@axe-core/playwright": "^4.6.0",
+    "@playwright/test": "^1.30.0",
     "@remix-run/dev": "^1.7.6",
     "@remix-run/eslint-config": "^1.7.6",
     "@testing-library/jest-dom": "^5.16.5",

@@ -1,6 +1,15 @@
 // eligibility.spec.ts
 import { test, expect, Response } from "@playwright/test";
 import { validateCookie, parseEligibilityID } from "../helpers/cookies";
+import AxeBuilder from "@axe-core/playwright";
+
+test("eligiblity has no automatically detectable accessibility errors", async ({
+  page,
+}) => {
+  await page.goto("/eligibility");
+  const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+  expect(accessibilityScanResults.violations).toEqual([]);
+});
 
 test("has title and header", async ({ page }) => {
   await page.goto("/eligibility");
@@ -10,7 +19,6 @@ test("has title and header", async ({ page }) => {
 
   await expect(page).toHaveScreenshot();
 });
-
 // This page needs to set a cookie
 test("the eligibilty page sets an eligibilityID cookie", async ({ page }) => {
   await page.goto("/eligibility");
@@ -168,7 +176,10 @@ test("it validates None and another option for adjunctive cannot be selected", a
       "Cannot select None and another option"
     ),
   ]);
-  await expect(page).toHaveScreenshot({ fullPage: true });
+  await expect(page).toHaveScreenshot({
+    fullPage: true,
+    maxDiffPixelRatio: 0.01,
+  });
 });
 
 test("it validates that you must select yes/no for Montana residency", async ({

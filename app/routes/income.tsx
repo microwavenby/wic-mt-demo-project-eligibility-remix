@@ -32,7 +32,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     eligibilityID,
     "income"
   )) as IncomeData;
-  console.log(`FOUND INCOME ${JSON.stringify(existingIncomePage)}`);
   return json(
     {
       eligibilityID: eligibilityID,
@@ -95,12 +94,10 @@ export default function Income() {
   // Page-specific consts.
   // Get the allowed household sizes from the json file.
   const householdSizes: string[] = Object.keys(incomeData);
-  console.log(`Household sizes ${householdSizes}`);
   // Get the list of allowed income periods.
   const incomePeriods: string[] = Object.keys(
     incomeData[householdSizes[0] as keyof typeof incomeData]
   );
-  console.log(`Periods for income ${incomePeriods}`);
   // Initialize translations.
   const { t } = useTranslation("common");
 
@@ -117,13 +114,13 @@ export default function Income() {
     <>
       <BackLink href={backRoute} />
       <h1>
-        <Trans i18nKey="Income.header" />
+        <Trans i18nKey="Income.title" />
       </h1>
       <RequiredQuestionStatement />
 
       <div className="content-group">
         <h2>
-          <Trans i18nKey="Income.title" />
+          <Trans i18nKey="Income.header" />
         </h2>
         <p>
           <Trans i18nKey="Income.enrolled" />

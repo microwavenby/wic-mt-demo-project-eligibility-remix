@@ -1,5 +1,14 @@
 // how-it-works.spec.ts
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+
+test("how-it-works has no automatically detectable accessibility errors", async ({
+  page,
+}) => {
+  await page.goto("/how-it-works");
+  const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+  expect(accessibilityScanResults.violations).toEqual([]);
+});
 
 test("has title and header", async ({ page }) => {
   await page.goto("/how-it-works");

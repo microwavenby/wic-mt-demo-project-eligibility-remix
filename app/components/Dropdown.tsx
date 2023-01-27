@@ -42,15 +42,22 @@ const Dropdown = (props: DropdownProps): ReactElement => {
         onChange={handleChange}
         value={selectedOption}
       >
-        <option value="" {...getInputProps({ id: id, label: "" })}>
+        <option
+          value=""
+          {...getInputProps({ id: `${id}-unselected`, label: "" })}
+        >
           -&nbsp;
           {t("select")}
           &nbsp;-
         </option>
-        {options.map((option: string) => (
+        {options.map((option: string, index: number) => (
           <option
             key={option}
-            {...getInputProps({ id: id, label: option, value: option })}
+            {...getInputProps({
+              id: `${id}-${index + 1}`,
+              label: option,
+              value: option,
+            })}
           >
             {option}
           </option>
