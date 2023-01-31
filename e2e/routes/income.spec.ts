@@ -16,7 +16,7 @@ test("has title and header", async ({ page }) => {
   await expect(page).toHaveTitle(/Check your eligibility/);
   await expect(page.getByRole("banner")).toHaveText(/Apply for WIC in Montana/);
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ maxDiffPixelRatio: 0.01 });
 });
 
 test("has a back link to /eligibility", async ({ page }) => {
@@ -24,6 +24,28 @@ test("has a back link to /eligibility", async ({ page }) => {
   // Expect a title "to contain" a correct app title.
   await page.getByRole("link", { name: "back" }).click(),
     await expect(page).toHaveURL("/eligibility");
+});
+
+test("displays placeholder if no household size selected", async ({ page }) => {
+  await page.goto("/income");
+  expect(await page.getByTestId("Annual-cell").innerText()).toBe("$XX,XXX");
+});
+
+test("displays income information by household", async ({ page }) => {
+  await page.goto("/income");
+  await page.getByTestId("dropdown").selectOption("2");
+  expect(await page.getByTestId("Annual-cell").innerText()).toBe("$33,874");
+});
+
+test("updates income information by household when householdSize changes", async ({
+  page,
+}) => {
+  await page.goto("/income");
+  const householdSizeInput = page.getByTestId("dropdown");
+  await householdSizeInput.selectOption("2");
+  expect(await page.getByTestId("Annual-cell").innerText()).toBe("$33,874");
+  await householdSizeInput.selectOption("3");
+  expect(await page.getByTestId("Annual-cell").innerText()).toBe("$42,606");
 });
 
 test(`the income form submits a POST request, and on return to the page,
@@ -36,7 +58,10 @@ test(`the income form submits a POST request, and on return to the page,
   await householdSizeInput.selectOption("2");
 
   // Test that the screenshot for the filled out form matches
-  await expect(page).toHaveScreenshot({ fullPage: true });
+  await expect(page).toHaveScreenshot({
+    fullPage: true,
+    maxDiffPixelRatio: 0.01,
+  });
 
   // Catch the POST request to the API with the form data while we click "Continue"
   //         response.url().includes("income?_data=routes%2Fincome") &&

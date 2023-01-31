@@ -15,7 +15,14 @@ import {
   useCatch,
   useLoaderData,
 } from "@remix-run/react";
-import { Alert, Label, TextInput, Button, Icon } from "@trussworks/react-uswds";
+import {
+  Alert,
+  Label,
+  TextInput,
+  Button,
+  Icon,
+  Title,
+} from "@trussworks/react-uswds";
 import { cookieParser } from "~/utils/formSession";
 import {
   findClinics,
@@ -82,18 +89,9 @@ export async function loader({ request }: { request: Request }) {
   console.log(
     `QUERY PARMS ${zipcode} VALID? ${zipcode && isValidZipCode(zipcode)}`
   );
-
-  if (!zipcode) {
-    return json(
-      {
-        eligibilityID: eligibilityID,
-        reviewMode: reviewMode,
-        backRoute: backRoute,
-      },
-      { headers: headers }
-    );
-  }
-  if (existingClinicPage && zipcode == existingClinicPage.zipCode) {
+  if (existingClinicPage && !zipcode) {
+    return redirect(`/choose-clinic?zip=${existingClinicPage.zipCode}`);
+  } else if (existingClinicPage && zipcode == existingClinicPage.zipCode) {
     return json(
       {
         eligibilityID: eligibilityID,
@@ -106,6 +104,17 @@ export async function loader({ request }: { request: Request }) {
       { headers: headers }
     );
   }
+  if (!zipcode) {
+    return json(
+      {
+        eligibilityID: eligibilityID,
+        reviewMode: reviewMode,
+        backRoute: backRoute,
+      },
+      { headers: headers }
+    );
+  }
+
   if (!isValidZipCode(zipcode)) {
     console.log(`ERROR: Bad zipcode ${zipcode}`);
     return json(
@@ -202,7 +211,7 @@ export default function ChooseClinic() {
   useEffect(() => {
     setZipNotInStateError(noResults);
     setFilteredClinics(clinics);
-  }, [noResults, clinics]);
+  }, [noResults, clinics, zipCode]);
   // Change handler for any updates to the zip code search field.
   const handleZipCodeChange = () => {
     // Reset all the clinic result states.
@@ -239,7 +248,7 @@ export default function ChooseClinic() {
         </h2>
         <section aria-label="Search clinic by zip">
           {invalidZip && (
-            <span className="usa-error-message">
+            <span className="usa-error-message" role="alert">
               <Trans i18nKey="ChooseClinic.zipValidationError" />
             </span>
           )}
@@ -265,13 +274,13 @@ export default function ChooseClinic() {
             ) : (
               ""
             )}
-            <Button type="submit">
-              <Icon.Search size={3} />
+            <Button type="submit" aria-label="Search for clinics">
+              <Icon.Search size={3} aria-label="A magnifying glass" />
             </Button>
           </Form>
         </section>
         {zipNotInStateError && (
-          <Alert type="error" headingLevel="h3">
+          <Alert type="error" headingLevel="h3" role="alert">
             {t("ChooseClinic.zipSearchError")}
           </Alert>
         )}

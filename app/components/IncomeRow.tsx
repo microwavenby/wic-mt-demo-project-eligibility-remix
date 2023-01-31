@@ -20,7 +20,11 @@ const IncomeRow = (props: IncomeRowProps): ReactElement => {
   return (
     <tr>
       {periods.map((period: string) => (
-        <td key={period} data-label={t(`Income.incomePeriods.${period}`)}>
+        <td
+          key={period}
+          data-testid={t(`Income.incomePeriods.${period}`) + "-cell"}
+          data-label={t(`Income.incomePeriods.${period}`)}
+        >
           {householdSize !== "" ? incomeForHouseholdSize[period] : "$XX,XXX"}
         </td>
       ))}
