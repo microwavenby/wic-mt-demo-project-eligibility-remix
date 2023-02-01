@@ -51,9 +51,7 @@ const TextField = (props: TextFieldProps): ReactElement => {
         {t(labelKey)}
         {required && <Required />}
       </Label>
-      {error && (
-        <ErrorMessage id="${titleKey}-error-message">{error}</ErrorMessage>
-      )}
+      {error && <ErrorMessage id={`${id}-error-message`}>{error}</ErrorMessage>}
       <TextTypeClass
         onChange={handleChange}
         {...getInputProps({

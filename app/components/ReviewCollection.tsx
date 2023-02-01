@@ -42,7 +42,10 @@ const ReviewCollection = (props: ReviewCollectionProps): ReactElement => {
           </div>
         )}
       </h2>
-      <dl className="margin-bottom-2">
+      <dl
+        className="margin-bottom-2"
+        data-testid={`review-section-${headerKey}`}
+      >
         {reviewElements.map((element: ReviewElementProps, index: number) => (
           <ReviewElement key={index} {...element} />
         ))}
