@@ -7,9 +7,10 @@ import TransLinks from "./TransLinks";
 type Props = {
   children: ReactElement;
   demoMode?: string;
+  missingData?: string;
 };
 
-const Layout = ({ children, demoMode }: Props): ReactElement => {
+const Layout = ({ children, demoMode, missingData }: Props): ReactElement => {
   return (
     <div className="container">
       {demoMode === "true" ? (
@@ -38,6 +39,18 @@ const Layout = ({ children, demoMode }: Props): ReactElement => {
       <main className="main">
         <div className="grid-row">
           <div className="desktop:grid-col-8 padding-2 padding-bottom-8">
+            {missingData === "true" ? (
+              <Alert
+                type="error"
+                headingLevel="h4"
+                className="margin-bottom-3"
+                role="alert"
+              >
+                <Trans i18nKey={"routingError"} />
+              </Alert>
+            ) : (
+              ""
+            )}
             {children}
           </div>
         </div>

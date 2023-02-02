@@ -7,7 +7,11 @@ import { cookieParser } from "~/utils/formSession";
 import ReviewSection from "~/components/ReviewSection";
 import { Button } from "@trussworks/react-uswds";
 import BackLink from "~/components/BackLink";
-import { getBackRoute, routeFromReview } from "~/utils/routing";
+import {
+  getBackRoute,
+  routeFromReview,
+  missingRequiredPage,
+} from "~/utils/routing";
 
 export const action = async ({ request }: { request: Request }) => {
   console.log(`Generating new session`);
@@ -23,6 +27,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { eligibilityID, headers } = await cookieParser(request);
   console.log(`Looking for ${eligibilityID}`);
   const eligibilityPages = await findEligibilityPages(eligibilityID);
+  const missingPage = missingRequiredPage(eligibilityPages);
+  if (missingPage) {
+    console.log(`Missing some data; redirecting to ${missingPage}`);
+    return redirect(`${missingPage}?missing-data=true`);
+  }
   return json(
     {
       eligibilityID: eligibilityID,

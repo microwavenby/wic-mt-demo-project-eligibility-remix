@@ -3,6 +3,7 @@ import {
   ContactData,
   EligibilityData,
   IncomeData,
+  EligibilityPagesType,
 } from "app/types";
 
 interface RestrictedPages {
@@ -79,6 +80,26 @@ export function routeFromContact(contact: ContactData): string {
 
 export function routeFromReview(): string {
   return "/confirmation";
+}
+
+export function missingRequiredPage(
+  eligibilityPages: EligibilityPagesType
+): string | null {
+  if (!eligibilityPages.eligibility) {
+    return "/eligibility";
+  }
+  if (eligibilityPages.eligibility && !eligibilityPages.income) {
+    if (eligibilityPages.eligibility.adjunctive[0] == "none") {
+      return "/income";
+    }
+  }
+  if (!eligibilityPages?.clinic?.clinic) {
+    return "/choose-clinic";
+  }
+  if (!eligibilityPages?.contact) {
+    return "/contact";
+  }
+  return null;
 }
 
 export function getBackRoute(

@@ -7,7 +7,7 @@ import {
   setFormDefaults,
 } from "remix-validated-form";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
-import { Button } from "@trussworks/react-uswds";
+import { Alert, Button } from "@trussworks/react-uswds";
 import Accordion from "~/components/Accordion";
 import BackLink from "~/components/BackLink";
 import InputChoiceGroup from "~/components/InputChoiceGroup";
@@ -28,6 +28,9 @@ export const eligibilityValidator = withZod(eligibilitySchema);
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const reviewMode = url.searchParams.get("mode") == "review";
+  const missingData =
+    url.searchParams.get("error") == "missing-data" ? "true" : "false";
+  console.log(`Missing Dater ${missingData} ${url.searchParams.get("error")}`);
   const { eligibilityID, headers } = await cookieParser(request);
   console.log(`Got eligibilityID ${eligibilityID} in LOADER`);
   const existingEligibilityPage = (await findEligibilityPageData(
@@ -38,6 +41,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     {
       eligibilityID: eligibilityID,
       reviewMode: reviewMode,
+      missingData: missingData,
       ...setFormDefaults("eligiblityForm", existingEligibilityPage),
     },
     { headers: headers }
@@ -68,7 +72,7 @@ type loaderData = Awaited<ReturnType<typeof loader>>;
 
 export default function Eligibility() {
   // Use useEffect() to properly load the data from session storage during react hydration.
-  const { reviewMode } = useLoaderData<loaderData>();
+  const { reviewMode, missingData } = useLoaderData<loaderData>();
   const data = useActionData();
 
   // Handle back link.
@@ -83,6 +87,13 @@ export default function Eligibility() {
 
   return (
     <>
+      {missingData === "true" ? (
+        <Alert type="error" headingLevel="h4" slim={true} role="alert">
+          <Trans i18nKey={"routingError"} />
+        </Alert>
+      ) : (
+        ""
+      )}
       <BackLink href={backRoute} />
       <h1>
         <Trans i18nKey="Eligibility.header" />

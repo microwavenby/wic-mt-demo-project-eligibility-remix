@@ -35,12 +35,15 @@ export function links() {
   ];
 }
 
-type LoaderData = { locale: string; demoMode: string };
+type LoaderData = { locale: string; demoMode: string; missingData: string };
 
 export let loader: LoaderFunction = async ({ request }) => {
   let locale = await i18next.getLocale(request);
   const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE ?? "false";
-  return json<LoaderData>({ locale, demoMode });
+  const url = new URL(request.url);
+  const missingData =
+    url.searchParams.get("missing-data") == "true" ? "true" : "false";
+  return json<LoaderData>({ locale, demoMode, missingData });
 };
 
 export let handle = {
@@ -53,7 +56,7 @@ export let handle = {
 
 export default function App() {
   // Get the locale from the loader
-  let { locale, demoMode } = useLoaderData<LoaderData>();
+  let { locale, demoMode, missingData } = useLoaderData<LoaderData>();
   let { i18n } = useTranslation();
 
   // This hook will change the i18n instance language to the current locale
@@ -69,7 +72,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Layout demoMode={demoMode}>
+        <Layout demoMode={demoMode} missingData={missingData}>
           <Outlet />
         </Layout>
         <ScrollRestoration />
