@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { parseEligibilityID } from "../helpers/cookies";
 import AxeBuilder from "@axe-core/playwright";
-
+import { fillClinic, fillEligibilityAdjunctive } from "../helpers/formFillers";
 test("contact has no automatically detectable accessibility errors", async ({
   page,
 }) => {
@@ -61,8 +61,9 @@ test("phone number field requires 10 digits", async ({ page }) => {
   const phoneField = page.getByLabel("Phone number");
   await phoneField.type("123456789");
   // Firefox and Chromium have a trailing space, WebKit does not
-  expect(await phoneField.inputValue()).toMatch(/123-456-789/);
   await page.getByRole("banner").click();
+
+  expect(await phoneField.inputValue()).toMatch(/123-456-789/);
   const phoneError = page.locator("#phone-error-message");
   await expect(phoneError).toHaveCount(1);
   expect(await phoneError.textContent()).toBe(
@@ -101,7 +102,9 @@ test("comments are NOT required", async ({ page }) => {
 
 test(`the contact form submits a POST request, and on return to the page,
       a GET request that repopulates the form`, async ({ page }) => {
-  await page.goto("/contact");
+  await page.goto("/eligibility");
+  await fillEligibilityAdjunctive(page, "/choose-clinic", "Continue");
+  await fillClinic(page, "/contact", "Select this clinic and continue");
   const cookies = await page.context().cookies();
   const eligibilityID = await parseEligibilityID(cookies[0]);
   await page.getByLabel("First name").type("Jane");

@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-  wic-remix-migrate:
+  wic-remix-migrate-reset:
     build:
       target: test
       context: .
@@ -11,7 +11,7 @@ services:
       database-e2e:
         condition: service_healthy
     command: >
-      bash -c "npx prisma migrate dev && npx prisma db seed"
+      bash -c "npx prisma migrate reset --force"
   database-e2e:
     image: postgres
     environment:
