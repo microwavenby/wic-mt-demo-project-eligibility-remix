@@ -11,7 +11,10 @@ export const ButtonLink = (props: ButtonLinkProps): ReactElement => {
   const { to, children, className, buttonClassName, ...rest } = props;
   return (
     <Link className={`text-unstyled ${className || ""}`} to={to}>
-      <Button type="button" className={buttonClassName}>
+      <Button
+        type="button"
+        className={`display-block ${buttonClassName || ""}`}
+      >
         {children}
       </Button>
     </Link>
