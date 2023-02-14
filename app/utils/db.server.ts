@@ -8,7 +8,7 @@ import {
 } from "~/types";
 import { Prisma } from "@prisma/client";
 
-import db from "~/utils/db.connection";
+import db from "app/utils/db.connection";
 
 type pathType = "eligibility" | "income" | "choose-clinic" | "contact";
 

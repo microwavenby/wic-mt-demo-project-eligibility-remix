@@ -7,16 +7,19 @@ exports[`should match snapshot when householdSize is an empty string 1`] = `
       <tr>
         <td
           data-label="Weekly"
+          data-testid="Weekly-cell"
         >
           $XX,XXX
         </td>
         <td
           data-label="Monthly"
+          data-testid="Monthly-cell"
         >
           $XX,XXX
         </td>
         <td
           data-label="Annual"
+          data-testid="Annual-cell"
         >
           $XX,XXX
         </td>
@@ -33,16 +36,19 @@ exports[`should match snapshot when householdSize is not empty string 1`] = `
       <tr>
         <td
           data-label="Weekly"
+          data-testid="Weekly-cell"
         >
           $100
         </td>
         <td
           data-label="Monthly"
+          data-testid="Monthly-cell"
         >
           $200
         </td>
         <td
           data-label="Annual"
+          data-testid="Annual-cell"
         >
           $300
         </td>

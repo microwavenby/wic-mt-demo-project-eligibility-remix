@@ -16,7 +16,7 @@ exports[`should match snapshot 1`] = `
     name="test-id"
   >
     <option
-      id="test-id"
+      id="test-id-unselected"
       label=""
       value=""
     >
@@ -25,21 +25,21 @@ exports[`should match snapshot 1`] = `
        -
     </option>
     <option
-      id="test-id"
+      id="test-id-1"
       label="a"
       value="a"
     >
       a
     </option>
     <option
-      id="test-id"
+      id="test-id-2"
       label="b"
       value="b"
     >
       b
     </option>
     <option
-      id="test-id"
+      id="test-id-3"
       label="c"
       value="c"
     >

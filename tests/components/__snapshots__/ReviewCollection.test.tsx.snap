@@ -10,6 +10,7 @@ exports[`should match snapshot when it is not the first element 1`] = `
     </h2>
     <dl
       class="margin-bottom-2"
+      data-testid="review-section-header key"
     >
       <div
         class="review-element margin-bottom-3"
@@ -54,6 +55,7 @@ exports[`should match snapshot when it is the first element 1`] = `
     </h2>
     <dl
       class="margin-bottom-2"
+      data-testid="review-section-header key"
     >
       <div
         class="review-element margin-bottom-3"
