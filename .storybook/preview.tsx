@@ -1,4 +1,3 @@
-import { withRouter } from "storybook-addon-react-router-v6";
 import { BrowserRouter } from "react-router-dom";
 import i18next from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
@@ -18,6 +17,13 @@ i18next
     resources: {
       en: {
         common: common,
+        test: {
+          accordion: {
+            sampleHeader: "This is a sample header",
+            sampleBody:
+              "<p>This is a sample body.</p><p>You can have additional text here</p>",
+          },
+        },
       },
     },
   });
