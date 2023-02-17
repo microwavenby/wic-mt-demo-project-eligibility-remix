@@ -4,6 +4,7 @@ import { I18nextProvider, initReactI18next } from "react-i18next";
 import i18n from "../app/i18n"; // your i18n configuration file
 import common from "../public/locales/en/common.json";
 import React from "react";
+
 import "app/styles/styles.css";
 
 i18next
@@ -22,6 +23,9 @@ i18next
             sampleHeader: "This is a sample header",
             sampleBody:
               "<p>This is a sample body.</p><p>You can have additional text here</p>",
+          },
+          dropdown: {
+            label: "Dropdown Sample Label",
           },
         },
       },

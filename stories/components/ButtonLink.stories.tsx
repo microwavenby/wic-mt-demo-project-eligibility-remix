@@ -1,17 +1,13 @@
-import { ButtonLink } from "app/components/ButtonLink";
+import { ButtonLink as ButtonLinkComponent } from "app/components/ButtonLink";
 import { ReactElement } from "react";
 
 export default {
-  component: ButtonLink,
+  component: ButtonLinkComponent,
   title: "Components/ButtonLink",
   argTypes: {
     buttonClassName: {
       description: "CSS classes to pass to the Button component",
       table: {
-        type: {
-          summary: "display-block",
-          detail: "something really really long",
-        },
         defaultValue: {
           summary: "display-block",
           detail:
@@ -52,14 +48,14 @@ const ButtonLinkTemplate = {
     buttonClassName: string;
   }) => {
     return (
-      <ButtonLink to={to} buttonClassName={buttonClassName}>
+      <ButtonLinkComponent to={to} buttonClassName={buttonClassName}>
         {children}
-      </ButtonLink>
+      </ButtonLinkComponent>
     );
   },
 };
 
-export const Default = {
+export const ButtonLink = {
   ...ButtonLinkTemplate,
   args: {
     buttonClassName: "",

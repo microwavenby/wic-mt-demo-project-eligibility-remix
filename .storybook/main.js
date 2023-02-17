@@ -10,7 +10,6 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
-    "storybook-addon-react-router-v6",
   ],
   framework: "@storybook/react",
   core: {
@@ -25,6 +24,9 @@ module.exports = {
       ...config.resolve.alias,
       "/uswds": path.resolve(__dirname, "../public/uswds"),
     };
+    config.resolve.alias["remix-validated-form"] = require.resolve(
+      "./mockModules/remix-validated-form.tsx"
+    );
     return config;
   },
 };

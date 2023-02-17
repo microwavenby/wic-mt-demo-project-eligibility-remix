@@ -1,15 +1,11 @@
-import Accordion from "app/components/Accordion";
-import { ReactElement } from "react";
+import AccordionComponent from "app/components/Accordion";
 
 export default {
-  component: Accordion,
+  component: AccordionComponent,
   title: "Components/Accordion",
   argTypes: {
     bodyKey: {
       description: "Key to the i18n translation for the Body Text",
-      type: {
-        required: true,
-      },
       table: {
         type: {
           summary: "i18key",
@@ -18,12 +14,9 @@ export default {
       },
       defaultValue: "test:accordion.sampleBody",
     },
-
     headerKey: {
       description: "Key to the i18n translation for the Header Text",
-      type: {
-        required: true,
-      },
+
       table: {
         type: {
           summary: "i18key",
@@ -34,7 +27,6 @@ export default {
     },
     id: {
       description: "Unique ID for the element",
-      type: { required: true },
       defaultValue: "help-accordion",
     },
   },
@@ -45,16 +37,17 @@ const AccordionTemplate = {
     bodyKey,
     headerKey,
     id,
-    ...args
   }: {
     bodyKey: string;
     headerKey: string;
     id: string;
   }) => {
-    return <Accordion bodyKey={bodyKey} headerKey={headerKey} id={id} />;
+    return (
+      <AccordionComponent bodyKey={bodyKey} headerKey={headerKey} id={id} />
+    );
   },
 };
 
-export const Default = {
+export const Accordion = {
   ...AccordionTemplate,
 };
