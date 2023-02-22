@@ -27,6 +27,29 @@ i18next
           dropdown: {
             label: "Dropdown Sample Label",
           },
+          inputchoice: {
+            label1: "Option 1",
+            label2: "Option 2",
+            label3: "Option 3",
+            labelRadio: "Example Radio",
+            labelCheckbox: "Example Checkbox",
+            helpHeader: "What does this mean?",
+            helpBody:
+              "<p><strong>Here is some information about what it means</strong></p><p>This is very helpful</p>",
+          },
+          list: {
+            item1: "List Item 1",
+            item2: "List Item 2",
+            item3: "List Item 3",
+          },
+          reviewelement: {
+            labelKey: "element a",
+          },
+          reviewcollection: {
+            label1: "element a",
+            label2: "element b",
+            header: "Collection Header",
+          },
         },
       },
     },

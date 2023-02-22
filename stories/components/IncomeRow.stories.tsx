@@ -37,7 +37,7 @@ const IncomeRowTemplate = {
           <tr>
             {incomePeriods.map((period: string) => (
               <th scope="col" key={period}>
-                {period}
+                <Trans i18nKey={`Income.incomePeriods.${period}`} />
               </th>
             ))}
           </tr>

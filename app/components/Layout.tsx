@@ -4,13 +4,17 @@ import { ReactElement } from "react";
 import { Alert } from "@trussworks/react-uswds";
 import TransLinks from "./TransLinks";
 
-type Props = {
+export type LayoutProps = {
   children: ReactElement;
   demoMode?: string;
   missingData?: string;
 };
 
-const Layout = ({ children, demoMode, missingData }: Props): ReactElement => {
+const Layout = ({
+  children,
+  demoMode,
+  missingData,
+}: LayoutProps): ReactElement => {
   return (
     <div className="container">
       {demoMode === "true" ? (

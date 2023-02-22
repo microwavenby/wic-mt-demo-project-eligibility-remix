@@ -1,6 +1,5 @@
 import ClinicInfo from "app/components/ClinicInfo";
 import type { ClinicInfoProps } from "app/components/ClinicInfo";
-import { ReactElement } from "react";
 
 export default {
   component: ClinicInfo,
