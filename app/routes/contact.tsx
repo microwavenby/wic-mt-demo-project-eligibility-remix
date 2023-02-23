@@ -76,7 +76,6 @@ export default function Contact() {
   const location = useLocation();
   const backRoute = getBackRoute(location.pathname);
   const actionButtonLabel = reviewMode ? "updateAndReturn" : "continue";
-
   return (
     <>
       <BackLink href={backRoute} />

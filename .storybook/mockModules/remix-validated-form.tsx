@@ -1,4 +1,11 @@
 import { Form } from "@remix-run/react";
+export {
+  validationError,
+  setFormDefaults,
+  createValidator,
+  FieldErrors,
+  Validator,
+} from "../../node_modules/remix-validated-form";
 // This is duplicative of the jest helper remixValidatedFormMock,
 // but the Jest global missing breaks the component in Storybook
 export const ValidatedForm = Form;

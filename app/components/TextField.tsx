@@ -28,6 +28,7 @@ export type TextFieldProps = {
     | "password"
     | "tel"
     | "url";
+  defaultValue?: string;
   value?: string;
 };
 
@@ -39,6 +40,7 @@ const TextField = (props: TextFieldProps): ReactElement => {
     required,
     type,
     inputType,
+    defaultValue,
     value,
     ...otherProps
   } = props;
@@ -54,6 +56,7 @@ const TextField = (props: TextFieldProps): ReactElement => {
       {error && <ErrorMessage id={`${id}-error-message`}>{error}</ErrorMessage>}
       <TextTypeClass
         onChange={handleChange}
+        defaultValue={defaultValue}
         {...getInputProps({
           id: id,
           type: inputType,

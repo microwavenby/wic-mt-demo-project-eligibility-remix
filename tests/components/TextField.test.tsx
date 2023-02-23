@@ -16,7 +16,6 @@ const testProps: TextFieldProps = {
   id: "input-id",
   labelKey: "input label",
   required: false,
-  value: "",
   inputType: "text",
 };
 

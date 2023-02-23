@@ -1,10 +1,9 @@
-import { BrowserRouter } from "react-router-dom";
 import i18next from "i18next";
+import { BrowserRouter } from "react-router-dom";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import i18n from "../app/i18n"; // your i18n configuration file
 import common from "../public/locales/en/common.json";
 import React from "react";
-
 import "app/styles/styles.css";
 
 i18next
@@ -49,6 +48,31 @@ i18next
             label1: "element a",
             label2: "element b",
             header: "Collection Header",
+          },
+          styledlink: {
+            textKey: "example link text",
+          },
+          textfield: {
+            inputbox: "This is an input box:",
+            textarea: "This is a text area:",
+          },
+          translinks: {
+            plainStringLinks: {
+              text: "first <0>second</0> <1>third</1>",
+              links: ["https://external.com", "/relative/link"],
+            },
+            plainStringLinksComplicated: {
+              text: "<1>first</1> <0>second</0> third <0>fourth</0> <1>fifth</1>",
+              links: ["https://external.com", "/relative/link"],
+            },
+            styledString: {
+              text: "first <strong>second</strong> <0>third</0>",
+              links: ["https://external.com"],
+            },
+            styledLink: {
+              text: "first <strong><0>second</0></strong>",
+              links: ["https://external.com"],
+            },
           },
         },
       },

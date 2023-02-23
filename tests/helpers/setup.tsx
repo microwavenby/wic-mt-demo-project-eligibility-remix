@@ -25,7 +25,6 @@ export const i18nwrapper = ({
           common: common,
           test: {
             transLine: {
-              plainString: "just text",
               plainStringOneLink: {
                 text: "first <0>second</0> third",
                 links: ["https://external.com"],
@@ -38,7 +37,6 @@ export const i18nwrapper = ({
                 text: "<1>first</1> <0>second</0> third <0>fourth</0> <1>fifth</1>",
                 links: ["https://external.com", "/relative/link"],
               },
-              styledString: "first <strong>second</strong> third",
               styledStringOneLink: {
                 text: "first <strong>second</strong> <0>third</0>",
                 links: ["https://external.com"],

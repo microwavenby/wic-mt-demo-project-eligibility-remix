@@ -3,7 +3,10 @@ import { Button } from "@trussworks/react-uswds";
 import TransLinks from "~/components/TransLinks";
 import { Form, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
-import { findEligibility, removeEligibilityPageData } from "~/utils/db.server";
+import {
+  findEligibility,
+  removeEligibilityPageData,
+} from "app/utils/db.server";
 import { cookieParser } from "~/utils/formSession";
 
 export const loader: LoaderFunction = async ({
