@@ -49,9 +49,10 @@ COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/styles /myapp/styles
 COPY --from=build /myapp/public /myapp/public
+COPY ./bin /myapp/bin
 COPY . .
 
-CMD ["npm", "start"]
+CMD ["/myapp/bin/start.sh"]
 
 # Provide a test container
 FROM build as test
