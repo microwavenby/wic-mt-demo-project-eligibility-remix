@@ -8,7 +8,10 @@ export {
 } from "../../node_modules/remix-validated-form";
 // This is duplicative of the jest helper remixValidatedFormMock,
 // but the Jest global missing breaks the component in Storybook
+
+// This ends up being <form> in ./remix-react.tsx
 export const ValidatedForm = Form;
+
 type MinimalInputProps = {
   onChange?: (...args: any[]) => void;
   onBlur?: (...args: any[]) => void;
@@ -23,6 +26,10 @@ export const getInputProps = <T extends MinimalInputProps>(
 ) => {
   return props as T;
 };
+
+// TODO: Figure out a way to determine whether this component is being
+// rendered in a story with "error" in the name or route, so that
+// an example error can be shown in Storybook
 export const useField = (args: any) => {
   return { error: undefined, getInputProps };
 };

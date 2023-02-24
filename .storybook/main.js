@@ -26,24 +26,13 @@ module.exports = {
       "remix-validated-form": require.resolve(
         "./mockModules/remix-validated-form.tsx"
       ),
+      "./app/utils/db.connection": require.resolve(
+        "./mockModules/utils/db.connection.ts"
+      ),
+      "@prisma/client": require.resolve("./mockModules/utils/prisma-client.ts"),
+      "@remix-run/react": require.resolve("./mockModules/remix-react.tsx"),
     };
-    config.resolve.alias["./app/utils/db.connection"] = require.resolve(
-      "./mockModules/utils/db.connection.ts"
-    );
-    config.resolve.alias["db.server$"] = require.resolve(
-      "./mockModules/utils/db.server.ts"
-    );
-    config.resolve.alias["@prisma/client"] = require.resolve(
-      "./mockModules/utils/prisma-client.ts"
-    );
-    config.resolve.alias["@remix-run/react"] = require.resolve(
-      "./mockModules/remix-react.tsx"
-    );
 
-    // );
-    // config.resolve.alias["/utils/db.server"] = require.resolve(
-    //   "./mockModules/db.server.ts"
-    // );
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
